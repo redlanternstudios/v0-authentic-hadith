@@ -223,21 +223,9 @@ function OnboardingContent() {
           }
           // If cancelled, still show success and go to home
         } else {
-          // On web, redirect to Stripe checkout
-          try {
-            const res = await fetch("/api/checkout/create-session", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ productId: data.selectedPlanId }),
-            })
-            const result = await res.json()
-            if (result.url) {
-              window.location.href = result.url
-              return
-            }
-          } catch {
-            // Checkout failed -- continue to home, user can subscribe later
-          }
+          // On web, redirect to pricing page with selected plan to show Stripe checkout
+          window.location.href = `/pricing?plan=${data.selectedPlanId}`
+          return
         }
       }
 
