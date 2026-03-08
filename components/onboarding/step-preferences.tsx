@@ -16,12 +16,6 @@ const COLLECTIONS = [
   { id: "ibnmajah", name: "Sunan Ibn Majah", count: "4,341 hadiths" },
 ]
 
-const LANGUAGES = [
-  { id: "english", label: "English", icon: "🇬🇧" },
-  { id: "arabic", label: "العربية", icon: "🇸🇦" },
-  { id: "both", label: "Both", icon: "🌐" },
-]
-
 const LEARNING_LEVELS = ["Beginner", "Intermediate", "Advanced"]
 
 interface StepPreferencesProps {
@@ -62,36 +56,7 @@ export function StepPreferences({ data, onUpdate }: StepPreferencesProps) {
       {/* Heading */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-foreground mb-2">Customize your experience</h2>
-        <p className="text-muted-foreground">Set your preferences to personalize your learning journey</p>
-      </div>
-
-      {/* Language Preference */}
-      <div className="space-y-3">
-        <label className="text-sm font-medium text-foreground">Preferred Language</label>
-        <div className="grid grid-cols-3 gap-3">
-          {LANGUAGES.map((lang) => (
-            <button
-              key={lang.id}
-              type="button"
-              onClick={() => onUpdate({ language: lang.id })}
-              className={cn(
-                "relative p-4 rounded-xl border-2 transition-all duration-200",
-                "hover:-translate-y-0.5",
-                data.language === lang.id
-                  ? "border-[#C5A059] bg-muted"
-                  : "border-border bg-card hover:border-[#d4d4d8]",
-              )}
-            >
-              {data.language === lang.id && (
-                <div className="absolute top-2 right-2 w-5 h-5 rounded-full gold-checkbox flex items-center justify-center">
-                  <Check className="w-3 h-3 text-white" />
-                </div>
-              )}
-              <div className="text-2xl mb-2">{lang.icon}</div>
-              <div className="text-sm font-medium text-foreground">{lang.label}</div>
-            </button>
-          ))}
-        </div>
+        <p className="text-muted-foreground">Select your interests to personalize your learning journey</p>
       </div>
 
       {/* Collections of Interest */}

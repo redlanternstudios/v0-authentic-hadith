@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { Loader2, ArrowLeft, ArrowRight } from "lucide-react"
 import { ProgressIndicator } from "@/components/onboarding/progress-indicator"
+import { StepLanguage } from "@/components/onboarding/step-language"
 import { StepProfile } from "@/components/onboarding/step-profile"
 import { StepPreferences } from "@/components/onboarding/step-preferences"
 import { StepSafety } from "@/components/onboarding/step-safety"
@@ -13,7 +14,7 @@ import { SuccessAnimation } from "@/components/onboarding/success-animation"
 import { getSupabaseBrowserClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 
-const TOTAL_STEPS = 4
+const TOTAL_STEPS = 5
 
 interface OnboardingData {
   // Step 1
@@ -75,12 +76,14 @@ function OnboardingContent() {
   const canProceed = () => {
     switch (currentStep) {
       case 1:
-        return data.name.trim().length >= 2 && /^[a-zA-Z\s\-']+$/.test(data.name)
+        return !!data.language // Language selection (always true since default exists)
       case 2:
-        return true // All optional
+        return data.name.trim().length >= 2 && /^[a-zA-Z\s\-']+$/.test(data.name)
       case 3:
-        return data.safetyAgreed && data.termsAgreed
+        return true // Preferences - all optional
       case 4:
+        return data.safetyAgreed && data.termsAgreed
+      case 5:
         return true // Free plan (null) or a paid plan
       default:
         return false
@@ -104,7 +107,7 @@ function OnboardingContent() {
   const handleSkip = () => {
     // Skip to safety step -- safety agreement is required before entering the app
     setSlideDirection("left")
-    setCurrentStep(3)
+    setCurrentStep(4)
   }
 
   const handleComplete = async () => {
@@ -305,6 +308,12 @@ function OnboardingContent() {
             )}
           >
             {currentStep === 1 && (
+              <StepLanguage
+                language={data.language}
+                onUpdate={(language) => updateData({ language })}
+              />
+            )}
+            {currentStep === 2 && (
               <StepProfile
                 data={{
                   name: data.name,
@@ -315,7 +324,7 @@ function OnboardingContent() {
                 onUpdate={updateData}
               />
             )}
-            {currentStep === 2 && (
+            {currentStep === 3 && (
               <StepPreferences
                 data={{
                   language: data.language,
@@ -325,7 +334,7 @@ function OnboardingContent() {
                 onUpdate={updateData}
               />
             )}
-            {currentStep === 3 && (
+            {currentStep === 4 && (
               <StepSafety
                 data={{
                   safetyAgreed: data.safetyAgreed,
@@ -334,7 +343,7 @@ function OnboardingContent() {
                 onUpdate={updateData}
               />
             )}
-            {currentStep === 4 && (
+            {currentStep === 5 && (
               <StepPlan
                 selectedPlanId={data.selectedPlanId}
                 onSelect={(planId) => updateData({ selectedPlanId: planId })}
@@ -344,8 +353,8 @@ function OnboardingContent() {
 
           {/* Navigation Buttons */}
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-border">
-            {/* Skip Link (Step 1 only) */}
-            {currentStep === 1 ? (
+            {/* Skip Link (Step 1 or 2 only) */}
+            {currentStep <= 2 ? (
               <button
                 type="button"
                 onClick={handleSkip}

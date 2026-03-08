@@ -5,13 +5,15 @@ import { cn } from "@/lib/utils"
 import { usePathname, useRouter } from "next/navigation"
 import { Home, BookOpen, Sun, Bot, Star, Menu } from "lucide-react"
 import { MobileDrawer } from "@/components/layout/mobile-drawer"
+import { useLanguage } from "@/hooks/use-language"
+import type { TranslationKey } from "@/lib/i18n/translations"
 
-const navItems = [
-  { id: "home", icon: Home, label: "Home", href: "/home" },
-  { id: "collections", icon: BookOpen, label: "Study", href: "/collections" },
-  { id: "today", icon: Sun, label: "Today", href: "/today" },
-  { id: "assistant", icon: Bot, label: "Chat", href: "/assistant" },
-  { id: "my-hadith", icon: Star, label: "My Hadith", href: "/my-hadith" },
+const navItems: { id: string; icon: typeof Home; labelKey: TranslationKey; href: string }[] = [
+  { id: "home", icon: Home, labelKey: "home", href: "/home" },
+  { id: "collections", icon: BookOpen, labelKey: "study", href: "/collections" },
+  { id: "today", icon: Sun, labelKey: "today", href: "/today" },
+  { id: "assistant", icon: Bot, labelKey: "chat", href: "/assistant" },
+  { id: "my-hadith", icon: Star, labelKey: "myHadith", href: "/my-hadith" },
 ]
 
 const excludedPaths = ["/", "/login", "/onboarding", "/reset-password"]
@@ -19,6 +21,7 @@ const excludedPaths = ["/", "/login", "/onboarding", "/reset-password"]
 export function BottomNavigation() {
   const pathname = usePathname()
   const router = useRouter()
+  const { t, dir } = useLanguage()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const handleCloseDrawer = useCallback(() => setDrawerOpen(false), [])
 
@@ -30,10 +33,11 @@ export function BottomNavigation() {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-[0_-2px_8px_rgba(0,0,0,0.1)] md:hidden">
+      <nav className={cn("fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-[0_-2px_8px_rgba(0,0,0,0.1)] md:hidden", dir === "rtl" && "font-arabic")} dir={dir}>
         <div className="flex items-center justify-around h-[72px]">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+            const label = t(item.labelKey)
             return (
               <button
                 type="button"
@@ -43,7 +47,7 @@ export function BottomNavigation() {
                   "relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full",
                   "transition-colors",
                 )}
-                aria-label={item.label}
+                aria-label={label}
                 aria-current={isActive ? "page" : undefined}
               >
                 {isActive && (
@@ -56,7 +60,7 @@ export function BottomNavigation() {
                     isActive ? "text-[#C5A059] font-bold" : "text-foreground",
                   )}
                 >
-                  {item.label}
+                  {label}
                 </span>
               </button>
             )
@@ -70,10 +74,10 @@ export function BottomNavigation() {
               "relative flex flex-col items-center justify-center gap-0.5 flex-1 h-full",
               "transition-colors",
             )}
-            aria-label="More"
+            aria-label={t("more")}
           >
             <Menu className="w-5 h-5 text-foreground" />
-            <span className="text-[10px] text-foreground">More</span>
+            <span className="text-[10px] text-foreground">{t("more")}</span>
           </button>
         </div>
       </nav>

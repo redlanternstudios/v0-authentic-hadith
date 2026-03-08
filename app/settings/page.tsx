@@ -2,27 +2,46 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, Bell, Moon, Globe, Shield, HelpCircle, Star, ChevronDown, Info, ChevronRight, Trash2, AlertTriangle, Loader2, Mail } from "lucide-react"
+import { ChevronLeft, Bell, Moon, Globe, Shield, HelpCircle, Star, ChevronDown, Info, ChevronRight, Trash2, AlertTriangle, Loader2, Mail, Check } from "lucide-react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { cn } from "@/lib/utils"
+import { useLanguage, type LanguagePreference } from "@/hooks/use-language"
 
 type ExpandedSection = "appearance" | "notifications" | "language" | "privacy" | "help" | null
 
-const settingsItems = [
-  { id: "notifications" as const, icon: Bell, label: "Notifications", description: "Manage push notifications" },
-  { id: "appearance" as const, icon: Moon, label: "Appearance", description: "Dark mode and display settings" },
-  { id: "language" as const, icon: Globe, label: "Language", description: "Change app language" },
-  { id: "privacy" as const, icon: Shield, label: "Privacy & Security", description: "Manage your data" },
-  { id: "help" as const, icon: HelpCircle, label: "Help & Support", description: "Get help and contact us" },
-]
-
 export default function SettingsPage() {
   const router = useRouter()
+  const { language, t, dir, setLanguage, isLoading: isLanguageLoading } = useLanguage()
   const [expanded, setExpanded] = useState<ExpandedSection>("appearance")
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [isSavingLanguage, setIsSavingLanguage] = useState(false)
+
+  // Language options with translations
+  const LANGUAGES = [
+    { id: "english" as LanguagePreference, label: t("english"), sublabel: t("englishPrimary"), icon: "EN" },
+    { id: "arabic" as LanguagePreference, label: t("arabic"), sublabel: t("arabicFirst"), icon: "ع" },
+    { id: "both" as LanguagePreference, label: t("both"), sublabel: t("sideBySide"), icon: "EN/ع" },
+  ]
+
+  // Settings items with translations
+  const settingsItems = [
+    { id: "notifications" as const, icon: Bell, label: t("notifications"), description: t("notificationsDesc") },
+    { id: "appearance" as const, icon: Moon, label: t("appearance"), description: t("appearanceDesc") },
+    { id: "language" as const, icon: Globe, label: t("language"), description: t("languageDesc") },
+    { id: "privacy" as const, icon: Shield, label: t("privacy"), description: t("privacyDesc") },
+    { id: "help" as const, icon: HelpCircle, label: t("help"), description: t("helpDesc") },
+  ]
+
+  // Update language preference
+  const handleLanguageChange = async (newLanguage: LanguagePreference) => {
+    setIsSavingLanguage(true)
+    await setLanguage(newLanguage)
+    setIsSavingLanguage(false)
+  }
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== "DELETE MY ACCOUNT") return
@@ -53,7 +72,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn("min-h-screen bg-background", dir === "rtl" && "font-arabic")} dir={dir}>
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
@@ -62,9 +81,9 @@ export default function SettingsPage() {
             onClick={() => router.back()}
             className="w-11 h-11 rounded-full bg-background border border-border flex items-center justify-center hover:border-[#C5A059] transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+            <ChevronLeft className={cn("w-5 h-5 text-muted-foreground", dir === "rtl" && "rotate-180")} />
           </button>
-          <h1 className="text-lg font-semibold text-foreground">Settings</h1>
+          <h1 className="text-lg font-semibold text-foreground">{t("settings")}</h1>
         </div>
       </header>
 
@@ -117,8 +136,44 @@ export default function SettingsPage() {
 
                   {item.id === "language" && (
                     <div className="pt-2 border-t border-border">
-                      <p className="text-sm text-muted-foreground mt-3">
-                        Authentic Hadith displays hadiths in both Arabic and English. All hadith texts include the original Arabic alongside verified English translations from scholarly sources.
+                      <p className="text-sm text-muted-foreground mt-3 mb-4">
+                        {t("languageChooseDesc")}
+                      </p>
+                      <div className="space-y-2">
+                        {LANGUAGES.map((lang) => (
+                          <button
+                            key={lang.id}
+                            type="button"
+                            disabled={isSavingLanguage}
+                            onClick={() => handleLanguageChange(lang.id)}
+                            className={cn(
+                              "w-full flex items-center gap-3 p-3 rounded-lg border transition-all",
+                              "hover:border-[#C5A059]/50 disabled:opacity-50",
+                              language === lang.id
+                                ? "border-[#C5A059] bg-[#C5A059]/5"
+                                : "border-border bg-background"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-semibold",
+                              language === lang.id
+                                ? "bg-[#C5A059] text-white"
+                                : "bg-muted text-muted-foreground"
+                            )}>
+                              {lang.icon}
+                            </div>
+                            <div className="flex-1 text-left">
+                              <div className="font-medium text-foreground">{lang.label}</div>
+                              <div className="text-xs text-muted-foreground">{lang.sublabel}</div>
+                            </div>
+                            {language === lang.id && (
+                              <Check className="w-5 h-5 text-[#C5A059]" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-3">
+                        {t("languageNote")}
                       </p>
                     </div>
                   )}
