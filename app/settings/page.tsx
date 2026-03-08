@@ -1,78 +1,45 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronLeft, Bell, Moon, Globe, Shield, HelpCircle, Star, ChevronDown, Info, ChevronRight, Trash2, AlertTriangle, Loader2, Mail, Check } from "lucide-react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
+import { useLanguage, type LanguagePreference } from "@/hooks/use-language"
 
 type ExpandedSection = "appearance" | "notifications" | "language" | "privacy" | "help" | null
 
-const LANGUAGES = [
-  { id: "english", label: "English", sublabel: "Primary", icon: "EN" },
-  { id: "arabic", label: "العربية", sublabel: "Arabic First", icon: "ع" },
-  { id: "both", label: "Both", sublabel: "Side by Side", icon: "EN/ع" },
-]
-
-const settingsItems = [
-  { id: "notifications" as const, icon: Bell, label: "Notifications", description: "Manage push notifications" },
-  { id: "appearance" as const, icon: Moon, label: "Appearance", description: "Dark mode and display settings" },
-  { id: "language" as const, icon: Globe, label: "Language", description: "Change app language" },
-  { id: "privacy" as const, icon: Shield, label: "Privacy & Security", description: "Manage your data" },
-  { id: "help" as const, icon: HelpCircle, label: "Help & Support", description: "Get help and contact us" },
-]
-
 export default function SettingsPage() {
   const router = useRouter()
+  const { language, t, dir, setLanguage, isLoading: isLanguageLoading } = useLanguage()
   const [expanded, setExpanded] = useState<ExpandedSection>("appearance")
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
-  const [language, setLanguage] = useState<string>("english")
   const [isSavingLanguage, setIsSavingLanguage] = useState(false)
-  const supabase = createClient()
 
-  // Fetch user's language preference on mount
-  useEffect(() => {
-    async function fetchPreferences() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+  // Language options with translations
+  const LANGUAGES = [
+    { id: "english" as LanguagePreference, label: t("english"), sublabel: t("englishPrimary"), icon: "EN" },
+    { id: "arabic" as LanguagePreference, label: t("arabic"), sublabel: t("arabicFirst"), icon: "ع" },
+    { id: "both" as LanguagePreference, label: t("both"), sublabel: t("sideBySide"), icon: "EN/ع" },
+  ]
 
-      const { data } = await supabase
-        .from("user_preferences")
-        .select("language")
-        .eq("user_id", user.id)
-        .single()
-
-      if (data?.language) {
-        setLanguage(data.language)
-      }
-    }
-    fetchPreferences()
-  }, [supabase])
+  // Settings items with translations
+  const settingsItems = [
+    { id: "notifications" as const, icon: Bell, label: t("notifications"), description: t("notificationsDesc") },
+    { id: "appearance" as const, icon: Moon, label: t("appearance"), description: t("appearanceDesc") },
+    { id: "language" as const, icon: Globe, label: t("language"), description: t("languageDesc") },
+    { id: "privacy" as const, icon: Shield, label: t("privacy"), description: t("privacyDesc") },
+    { id: "help" as const, icon: HelpCircle, label: t("help"), description: t("helpDesc") },
+  ]
 
   // Update language preference
-  const handleLanguageChange = async (newLanguage: string) => {
+  const handleLanguageChange = async (newLanguage: LanguagePreference) => {
     setIsSavingLanguage(true)
-    setLanguage(newLanguage)
-
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      setIsSavingLanguage(false)
-      return
-    }
-
-    await supabase
-      .from("user_preferences")
-      .upsert({
-        user_id: user.id,
-        language: newLanguage,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: "user_id" })
-
+    await setLanguage(newLanguage)
     setIsSavingLanguage(false)
   }
 
@@ -105,7 +72,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={cn("min-h-screen bg-background", dir === "rtl" && "font-arabic")} dir={dir}>
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
@@ -114,9 +81,9 @@ export default function SettingsPage() {
             onClick={() => router.back()}
             className="w-11 h-11 rounded-full bg-background border border-border flex items-center justify-center hover:border-[#C5A059] transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+            <ChevronLeft className={cn("w-5 h-5 text-muted-foreground", dir === "rtl" && "rotate-180")} />
           </button>
-          <h1 className="text-lg font-semibold text-foreground">Settings</h1>
+          <h1 className="text-lg font-semibold text-foreground">{t("settings")}</h1>
         </div>
       </header>
 
@@ -170,7 +137,7 @@ export default function SettingsPage() {
                   {item.id === "language" && (
                     <div className="pt-2 border-t border-border">
                       <p className="text-sm text-muted-foreground mt-3 mb-4">
-                        Choose how hadith text is displayed throughout the app.
+                        {t("languageChooseDesc")}
                       </p>
                       <div className="space-y-2">
                         {LANGUAGES.map((lang) => (
@@ -206,7 +173,7 @@ export default function SettingsPage() {
                         ))}
                       </div>
                       <p className="text-xs text-muted-foreground mt-3">
-                        All hadiths include authentic Arabic text with verified English translations from scholarly sources.
+                        {t("languageNote")}
                       </p>
                     </div>
                   )}

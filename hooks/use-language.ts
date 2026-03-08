@@ -1,16 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
+import { getTranslation, getTextDirection, type TranslationKey, type Language } from "@/lib/i18n/translations"
 
-export type LanguagePreference = "english" | "arabic" | "both"
+export type LanguagePreference = Language
 
 interface UseLanguageReturn {
   language: LanguagePreference
   isArabicPrimary: boolean
   showBoth: boolean
   isLoading: boolean
+  dir: "rtl" | "ltr"
+  t: (key: TranslationKey) => string
   setLanguage: (lang: LanguagePreference) => Promise<void>
 }
 
@@ -38,6 +40,12 @@ export function useLanguage(): UseLanguageReturn {
   )
 
   const language = data?.language || "english"
+  
+  // Translation function
+  const t = (key: TranslationKey): string => getTranslation(key, language)
+  
+  // Text direction
+  const dir = getTextDirection(language)
 
   const setLanguage = async (newLang: LanguagePreference) => {
     // Optimistically update
@@ -63,6 +71,8 @@ export function useLanguage(): UseLanguageReturn {
     isArabicPrimary: language === "arabic",
     showBoth: language === "both",
     isLoading,
+    dir,
+    t,
     setLanguage,
   }
 }
