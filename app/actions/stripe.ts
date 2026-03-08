@@ -6,14 +6,10 @@ import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { getStripePriceId, BILLING_CONFIG } from "@/lib/billing/config"
 
 export async function startCheckoutSession(productId: string) {
-  console.log("[v0] startCheckoutSession called with productId:", productId)
-  
   const product = getProductById(productId)
   if (!product) {
-    console.log("[v0] Product not found for id:", productId)
     throw new Error(`Product with id "${productId}" not found`)
   }
-  console.log("[v0] Product found:", product.name)
 
   // Get the authenticated user
   const supabase = await getSupabaseServerClient()
@@ -60,17 +56,14 @@ export async function startCheckoutSession(productId: string) {
 
   // Try to use pre-created Stripe Price ID first (recommended)
   const stripePriceId = getStripePriceId(planType)
-  console.log("[v0] Plan type:", planType, "| Stripe Price ID:", stripePriceId || "NOT SET (using fallback)")
 
   // Build line_items - prefer Price ID, fallback to price_data
   let lineItems: Record<string, unknown>[]
 
   if (stripePriceId) {
     // Use pre-created Stripe Price (recommended for trials)
-    console.log("[v0] Using pre-created Stripe Price ID:", stripePriceId)
     lineItems = [{ price: stripePriceId, quantity: 1 }]
   } else {
-    console.log("[v0] Using fallback inline price_data")
     // Fallback: Build price_data inline
     const fallback = BILLING_CONFIG.fallbackPricing[planType]
     const priceData: Record<string, unknown> = {
@@ -114,19 +107,13 @@ export async function startCheckoutSession(productId: string) {
     sessionParams.subscription_data = subscriptionData
   }
 
-  console.log("[v0] Creating Stripe checkout session with params:", JSON.stringify(sessionParams, null, 2))
-  
   const session = await stripe.checkout.sessions.create(
     sessionParams as Parameters<typeof stripe.checkout.sessions.create>[0],
   )
 
-  console.log("[v0] Stripe session created:", session.id, "| Status:", session.status)
-
   if (!session.client_secret) {
-    console.log("[v0] ERROR: No client_secret in session response")
     throw new Error("Failed to create checkout session -- no client secret returned")
   }
 
-  console.log("[v0] Returning client_secret successfully")
   return session.client_secret
 }

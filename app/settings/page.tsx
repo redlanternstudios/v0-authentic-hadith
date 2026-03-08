@@ -1,12 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, Bell, Moon, Globe, Shield, HelpCircle, Star, ChevronDown, Info, ChevronRight, Trash2, AlertTriangle, Loader2, Mail } from "lucide-react"
+import { ChevronLeft, Bell, Moon, Globe, Shield, HelpCircle, Star, ChevronDown, Info, ChevronRight, Trash2, AlertTriangle, Loader2, Mail, Check } from "lucide-react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { createClient } from "@/lib/supabase/client"
+import { cn } from "@/lib/utils"
 
 type ExpandedSection = "appearance" | "notifications" | "language" | "privacy" | "help" | null
+
+const LANGUAGES = [
+  { id: "english", label: "English", sublabel: "Primary", icon: "EN" },
+  { id: "arabic", label: "العربية", sublabel: "Arabic First", icon: "ع" },
+  { id: "both", label: "Both", sublabel: "Side by Side", icon: "EN/ع" },
+]
 
 const settingsItems = [
   { id: "notifications" as const, icon: Bell, label: "Notifications", description: "Manage push notifications" },
@@ -23,6 +31,50 @@ export default function SettingsPage() {
   const [deleteConfirmText, setDeleteConfirmText] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [language, setLanguage] = useState<string>("english")
+  const [isSavingLanguage, setIsSavingLanguage] = useState(false)
+  const supabase = createClient()
+
+  // Fetch user's language preference on mount
+  useEffect(() => {
+    async function fetchPreferences() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data } = await supabase
+        .from("user_preferences")
+        .select("language")
+        .eq("user_id", user.id)
+        .single()
+
+      if (data?.language) {
+        setLanguage(data.language)
+      }
+    }
+    fetchPreferences()
+  }, [supabase])
+
+  // Update language preference
+  const handleLanguageChange = async (newLanguage: string) => {
+    setIsSavingLanguage(true)
+    setLanguage(newLanguage)
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setIsSavingLanguage(false)
+      return
+    }
+
+    await supabase
+      .from("user_preferences")
+      .upsert({
+        user_id: user.id,
+        language: newLanguage,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "user_id" })
+
+    setIsSavingLanguage(false)
+  }
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== "DELETE MY ACCOUNT") return
@@ -117,8 +169,44 @@ export default function SettingsPage() {
 
                   {item.id === "language" && (
                     <div className="pt-2 border-t border-border">
-                      <p className="text-sm text-muted-foreground mt-3">
-                        Authentic Hadith displays hadiths in both Arabic and English. All hadith texts include the original Arabic alongside verified English translations from scholarly sources.
+                      <p className="text-sm text-muted-foreground mt-3 mb-4">
+                        Choose how hadith text is displayed throughout the app.
+                      </p>
+                      <div className="space-y-2">
+                        {LANGUAGES.map((lang) => (
+                          <button
+                            key={lang.id}
+                            type="button"
+                            disabled={isSavingLanguage}
+                            onClick={() => handleLanguageChange(lang.id)}
+                            className={cn(
+                              "w-full flex items-center gap-3 p-3 rounded-lg border transition-all",
+                              "hover:border-[#C5A059]/50 disabled:opacity-50",
+                              language === lang.id
+                                ? "border-[#C5A059] bg-[#C5A059]/5"
+                                : "border-border bg-background"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-10 h-10 rounded-lg flex items-center justify-center text-sm font-semibold",
+                              language === lang.id
+                                ? "bg-[#C5A059] text-white"
+                                : "bg-muted text-muted-foreground"
+                            )}>
+                              {lang.icon}
+                            </div>
+                            <div className="flex-1 text-left">
+                              <div className="font-medium text-foreground">{lang.label}</div>
+                              <div className="text-xs text-muted-foreground">{lang.sublabel}</div>
+                            </div>
+                            {language === lang.id && (
+                              <Check className="w-5 h-5 text-[#C5A059]" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-3">
+                        All hadiths include authentic Arabic text with verified English translations from scholarly sources.
                       </p>
                     </div>
                   )}
