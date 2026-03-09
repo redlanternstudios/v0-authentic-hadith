@@ -1,8 +1,10 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
-import { ChevronLeft, Home } from "lucide-react"
+import { ChevronLeft, ChevronRight, Home } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/hooks/use-language"
+import type { TranslationKey } from "@/lib/i18n/translations"
 
 // Root-level pages where back button should NOT appear
 const rootPages = ["/home", "/collections", "/today", "/assistant", "/my-hadith"]
@@ -10,64 +12,33 @@ const rootPages = ["/home", "/collections", "/today", "/assistant", "/my-hadith"
 // Pages excluded from showing the top bar entirely
 const excludedPaths = ["/", "/login", "/onboarding", "/reset-password", "/checkout/success"]
 
-// Derive a page title from the pathname
-function getPageTitle(pathname: string): string {
-  const segments = pathname.split("/").filter(Boolean)
-  if (segments.length === 0) return ""
-
-  // Map known routes to labels
-  const routeLabels: Record<string, string> = {
-    home: "Home",
-    collections: "Collections",
-    today: "Today",
-    assistant: "AI Assistant",
-    "my-hadith": "My Hadith",
-    search: "Search",
-    saved: "Saved",
-    quiz: "Quiz",
-    topics: "Topics",
-    sunnah: "Sunnah",
-    learn: "Learning Paths",
-    stories: "Stories",
-    reflections: "Reflections",
-    progress: "Progress",
-    achievements: "Achievements",
-    profile: "Profile",
-    settings: "Settings",
-    pricing: "Pricing",
-    hadith: "Hadith",
-    share: "Share",
-    dashboard: "Dashboard",
-    about: "About",
-  }
-
-  // For deep pages, show the last meaningful segment
-  const lastSegment = segments[segments.length - 1]
-
-  // Check if the first segment has a known label
-  const firstLabel = routeLabels[segments[0]]
-
-  if (segments.length === 1) {
-    return firstLabel || capitalize(lastSegment)
-  }
-
-  // For nested routes like /collections/bukhari, /topics/faith, etc.
-  // Show the parent label
-  if (segments.length === 2) {
-    return firstLabel || capitalize(segments[0])
-  }
-
-  // For deeply nested routes like /collections/bukhari/books/1/chapters/2
-  // Show a contextual title
-  if (segments[0] === "collections") {
-    if (segments.includes("chapters")) return "Chapter"
-    if (segments.includes("books")) return "Book"
-    return "Collection"
-  }
-
-  return firstLabel || capitalize(segments[0])
+// Map routes to translation keys
+const routeTranslationKeys: Record<string, TranslationKey> = {
+  home: "home",
+  collections: "collections",
+  today: "today",
+  assistant: "assistant",
+  "my-hadith": "myHadith",
+  search: "search",
+  saved: "saved",
+  quiz: "quiz",
+  topics: "topics",
+  sunnah: "sunnah",
+  learn: "learningPaths",
+  stories: "stories",
+  reflections: "reflections",
+  progress: "progress",
+  achievements: "achievements",
+  profile: "profile",
+  settings: "settings",
+  pricing: "subscription",
+  hadith: "hadith",
+  share: "shareHadith",
+  dashboard: "progress",
+  about: "about",
 }
 
+// Fallback capitalize for unknown routes
 function capitalize(s: string): string {
   return s
     .split("-")
@@ -78,6 +49,7 @@ function capitalize(s: string): string {
 export function MobileTopBar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { t, dir } = useLanguage()
 
   const isExcluded = excludedPaths.some(
     (path) => pathname === path || (path !== "/" && pathname.startsWith(path))
@@ -87,14 +59,40 @@ export function MobileTopBar() {
 
   const isRootPage = rootPages.includes(pathname)
   const isHomePage = pathname === "/home"
-  const title = getPageTitle(pathname)
+  
+  // Get translation key for the current route
+  const getPageTitle = (): string => {
+    const segments = pathname.split("/").filter(Boolean)
+    if (segments.length === 0) return ""
+
+    const firstSegment = segments[0]
+    const translationKey = routeTranslationKeys[firstSegment]
+    
+    if (translationKey) {
+      return t(translationKey)
+    }
+
+    // For deeply nested routes like /collections/bukhari/books/1/chapters/2
+    if (firstSegment === "collections") {
+      if (segments.includes("chapters")) return t("hadith")
+      if (segments.includes("books")) return t("collections")
+      return t("collections")
+    }
+
+    return capitalize(firstSegment)
+  }
+
+  const title = getPageTitle()
+  const BackIcon = dir === "rtl" ? ChevronRight : ChevronLeft
 
   return (
     <header
       className={cn(
         "sticky top-0 z-40 flex items-center h-12 px-2 bg-card/95 backdrop-blur-sm border-b border-border",
-        "md:hidden" // Only show on mobile
+        "xl:hidden", // Show on mobile and tablets, hide on desktop
+        dir === "rtl" && "font-arabic flex-row-reverse"
       )}
+      dir={dir}
     >
       {/* Back button - hidden on root pages */}
       <div className="w-10 flex items-center justify-center">
@@ -102,9 +100,9 @@ export function MobileTopBar() {
           <button
             onClick={() => router.back()}
             className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted transition-colors"
-            aria-label="Go back"
+            aria-label={t("back")}
           >
-            <ChevronLeft className="w-5 h-5 text-foreground" />
+            <BackIcon className="w-5 h-5 text-foreground" />
           </button>
         )}
       </div>
@@ -122,7 +120,7 @@ export function MobileTopBar() {
           <button
             onClick={() => router.push("/home")}
             className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted transition-colors"
-            aria-label="Go home"
+            aria-label={t("home")}
           >
             <Home className="w-5 h-5 text-[#C5A059]" />
           </button>
