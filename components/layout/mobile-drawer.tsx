@@ -123,7 +123,7 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
       {open && (
         <button
           type="button"
-          className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm md:hidden cursor-default"
+          className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm xl:hidden cursor-default"
           onClick={onClose}
           aria-label={t("closeMenu")}
         />
@@ -133,7 +133,7 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
       <div
         className={cn(
           "fixed top-0 z-[70] h-full w-[280px] bg-card shadow-xl",
-          "transform transition-transform duration-300 ease-in-out md:hidden",
+          "transform transition-transform duration-300 ease-in-out xl:hidden",
           "overflow-y-auto",
           dir === "rtl" ? "left-0 border-r border-border font-arabic" : "right-0 border-l border-border",
           dir === "rtl" 

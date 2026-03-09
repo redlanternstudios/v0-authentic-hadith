@@ -144,6 +144,13 @@ export const translations = {
   achievements: { en: "Achievements", ar: "الإنجازات" },
   quiz: { en: "Quiz", ar: "اختبار" },
   about: { en: "About", ar: "حول" },
+  
+  // Sidebar specific
+  authenticHadith: { en: "Authentic Hadith", ar: "الحديث الصحيح" },
+  verifiedSources: { en: "Learn from verified sources", ar: "تعلم من مصادر موثقة" },
+  collapse: { en: "Collapse", ar: "طي" },
+  expand: { en: "Expand", ar: "توسيع" },
+  user: { en: "User", ar: "مستخدم" },
 } as const
 
 export type TranslationKey = keyof typeof translations

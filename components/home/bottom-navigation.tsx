@@ -33,7 +33,7 @@ export function BottomNavigation() {
 
   return (
     <>
-      <nav className={cn("fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-[0_-2px_8px_rgba(0,0,0,0.1)] md:hidden", dir === "rtl" && "font-arabic")} dir={dir}>
+      <nav className={cn("fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border shadow-[0_-2px_8px_rgba(0,0,0,0.1)] xl:hidden", dir === "rtl" && "font-arabic")} dir={dir}>
         <div className="flex items-center justify-around h-[72px]">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
