@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 import { startCheckoutSession } from "@/app/actions/stripe"
-import { AlertCircle, LogIn, RotateCcw } from "lucide-react"
+import { AlertCircle, LogIn, RotateCcw, ArrowLeft } from "lucide-react"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -20,7 +20,15 @@ export default function Checkout({ productId }: { productId: string }) {
       const secret = await startCheckoutSession(productId)
       return secret
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to start checkout"
+      // Extract a user-friendly error message
+      let message = "Failed to start checkout. Please try again."
+      if (err instanceof Error) {
+        message = err.message
+      }
+      // Check for common Stripe errors
+      if (message.includes("No such price") || message.includes("Invalid price")) {
+        message = "This plan is temporarily unavailable. Please try another plan or contact support."
+      }
       setError(message)
       throw err
     }
@@ -35,35 +43,52 @@ export default function Checkout({ productId }: { productId: string }) {
     setKey((k) => k + 1)
   }
 
+  const handleBackToPlans = () => {
+    router.push("/pricing")
+  }
+
   if (error) {
     const isAuthError = error.toLowerCase().includes("logged in")
+    const isInvalidPlan = error.toLowerCase().includes("invalid plan") || error.toLowerCase().includes("unavailable")
+    
     return (
       <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-center">
         <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-3" />
         <p className="text-sm font-medium text-foreground mb-1">
-          {isAuthError ? "Sign in Required" : "Checkout Error"}
+          {isAuthError ? "Sign in Required" : isInvalidPlan ? "Plan Unavailable" : "Checkout Error"}
         </p>
         <p className="text-xs text-muted-foreground mb-4">{error}</p>
-        {isAuthError ? (
-          <button
-            onClick={() => {
-              const returnUrl = encodeURIComponent(`/pricing?plan=${productId}`)
-              router.push(`/login?redirect=${returnUrl}`)
-            }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#C5A059] to-[#E8C77D] text-white text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <LogIn className="w-4 h-4" />
-            Sign In to Continue
-          </button>
-        ) : (
-          <button
-            onClick={handleRetry}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border border-border text-sm font-medium hover:border-[#C5A059] transition-colors"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Try Again
-          </button>
-        )}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+          {isAuthError ? (
+            <button
+              onClick={() => {
+                const returnUrl = encodeURIComponent(`/pricing?plan=${productId}`)
+                router.push(`/login?redirect=${returnUrl}`)
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#C5A059] to-[#E8C77D] text-white text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <LogIn className="w-4 h-4" />
+              Sign In to Continue
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={handleRetry}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border border-border text-sm font-medium hover:border-[#C5A059] transition-colors"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Try Again
+              </button>
+              <button
+                onClick={handleBackToPlans}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border border-border text-sm font-medium hover:border-[#C5A059] transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Plans
+              </button>
+            </>
+          )}
+        </div>
       </div>
     )
   }

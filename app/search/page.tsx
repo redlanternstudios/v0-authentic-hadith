@@ -4,9 +4,10 @@ import React from "react"
 
 import { useState, useEffect, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Search, ChevronLeft, BookOpen, Hash, FolderOpen, Bookmark, Share2 } from "lucide-react"
+import { Search, ChevronLeft, BookOpen, Hash, FolderOpen, Bookmark, Share2, Sparkles, Crown } from "lucide-react"
 
 import { getCleanTranslation, getCollectionDisplayName } from "@/lib/hadith-utils"
+import { useSubscription } from "@/hooks/use-subscription"
 import { getSupabaseBrowserClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 import useSWR from "swr"
@@ -19,6 +20,7 @@ function SearchContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = getSupabaseBrowserClient()
+  const { isPremium } = useSubscription()
   const initialQuery = searchParams.get("q") || ""
   const [query, setQuery] = useState(initialQuery)
   const [debouncedQuery, setDebouncedQuery] = useState(initialQuery)
@@ -130,9 +132,20 @@ function SearchContent() {
           </div>
         ) : results.length > 0 ? (
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground mb-2">
-              Found {filteredResults.length} result{filteredResults.length !== 1 ? "s" : ""}{activeTag ? ` for #${activeTag}` : ""}
-            </p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm text-muted-foreground">
+                Found {filteredResults.length} result{filteredResults.length !== 1 ? "s" : ""}{activeTag ? ` for #${activeTag}` : ""}
+              </p>
+              {!isPremium && (
+                <button
+                  onClick={() => router.push("/pricing")}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#C5A059]/10 text-[#C5A059] hover:bg-[#C5A059]/20 transition-colors"
+                >
+                  <Crown className="w-3 h-3" />
+                  Upgrade for AI Search
+                </button>
+              )}
+            </div>
             {/* Tag facets */}
             {facets.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pb-2">
@@ -242,6 +255,22 @@ function SearchContent() {
             <BookOpen className="w-12 h-12 mx-auto mb-4 text-muted-foreground/40" />
             <p className="text-muted-foreground mb-4">No hadiths found for &ldquo;{debouncedQuery}&rdquo;</p>
             <p className="text-sm text-muted-foreground/60">Try searching for: {suggestedTerms.join(", ")}</p>
+            
+            {/* Pro upsell when no results */}
+            {!isPremium && (
+              <button
+                onClick={() => router.push("/pricing")}
+                className="mt-6 mx-auto flex items-center gap-3 px-5 py-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-[#E8C77D]/10 border border-[#C5A059]/30 hover:border-[#C5A059]/50 transition-colors"
+              >
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#C5A059] to-[#E8C77D] flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-foreground">Try Advanced Search</p>
+                  <p className="text-xs text-muted-foreground">Semantic search & synonym expansion</p>
+                </div>
+              </button>
+            )}
           </div>
         ) : (
           <div className="text-center py-12">

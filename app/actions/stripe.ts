@@ -1,14 +1,32 @@
 "use server"
 
 import { stripe } from "@/lib/stripe"
-import { getProductById } from "@/lib/products"
+import { getProductById, PRODUCTS } from "@/lib/products"
 import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { getStripePriceId, BILLING_CONFIG } from "@/lib/billing/config"
 
+// Plan alias normalization - maps common variations to canonical product IDs
+const PLAN_ALIASES: Record<string, string> = {
+  "monthly": "monthly-premium",
+  "annual": "annual-premium",
+  "lifetime": "lifetime-access",
+  "monthly-premium": "monthly-premium",
+  "annual-premium": "annual-premium",
+  "lifetime-access": "lifetime-access",
+}
+
+function normalizeProductId(productId: string): string {
+  return PLAN_ALIASES[productId] || productId
+}
+
 export async function startCheckoutSession(productId: string) {
-  const product = getProductById(productId)
+  // Normalize the product ID in case an alias was passed
+  const normalizedId = normalizeProductId(productId)
+  const product = getProductById(normalizedId)
+  
   if (!product) {
-    throw new Error(`Product with id "${productId}" not found`)
+    const validIds = PRODUCTS.map(p => p.id).join(", ")
+    throw new Error(`Invalid plan "${productId}". Valid plans: ${validIds}`)
   }
 
   // Get the authenticated user

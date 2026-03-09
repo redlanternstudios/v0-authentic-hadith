@@ -31,6 +31,7 @@ import {
   Users,
   PenLine,
   PlayCircle,
+  Crown,
 } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { getCleanTranslation, getCollectionDisplayName } from "@/lib/hadith-utils"
@@ -477,10 +478,42 @@ export default function HomePage() {
   <DailyHadithCard hadith={displayHadith} onSave={handleSaveHadith} onShare={handleShareHadith} />
   </section>
 
-  {/* Pro CTA for free users */}
+  {/* Pro CTA for free users - show more prominently if they've used features */}
   {quota && !quota.isPremium && (
-    <section className="px-4 md:px-8 pb-4">
-      <ProUpgradeCTA />
+    <section className="pb-4">
+      {/* Show enhanced CTA if user has engaged (saved hadiths, used AI, etc.) */}
+      {(quota.usage.saves > 5 || quota.usage.aiToday > 0 || savedCount > 3) ? (
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#1B5E43] to-[#2D7A5B] p-5">
+          {/* Decorative pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+              <pattern id="pro-cta-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M10 0L20 10L10 20L0 10Z" fill="currentColor" className="text-white" />
+              </pattern>
+              <rect width="100%" height="100%" fill="url(#pro-cta-pattern)" />
+            </svg>
+          </div>
+          <div className="relative flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <Sparkles className="w-6 h-6 text-[#E8C77D]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-bold text-white mb-0.5">{"You're growing in knowledge!"}</h3>
+              <p className="text-xs text-white/80">
+                Unlock unlimited AI, saves, and advanced features with Pro.
+              </p>
+            </div>
+            <button
+              onClick={() => router.push("/pricing")}
+              className="shrink-0 px-4 py-2 rounded-lg bg-gradient-to-r from-[#C5A059] to-[#E8C77D] text-[#2c2416] text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              Try Free
+            </button>
+          </div>
+        </div>
+      ) : (
+        <ProUpgradeCTA />
+      )}
     </section>
   )}
   

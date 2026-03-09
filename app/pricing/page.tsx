@@ -89,13 +89,36 @@ const planIcons: Record<string, React.ReactNode> = {
   "lifetime-access": <Infinity className="w-5 h-5 text-[#C5A059]" />,
 }
 
+/* ── Plan alias normalization ─────────────────────────────── */
+
+// Maps common URL variations to canonical product IDs
+const PLAN_ALIASES: Record<string, string> = {
+  "monthly": "monthly-premium",
+  "annual": "annual-premium",
+  "lifetime": "lifetime-access",
+  "monthly-premium": "monthly-premium",
+  "annual-premium": "annual-premium",
+  "lifetime-access": "lifetime-access",
+  // Also handle potential typos/variations
+  "pro": "monthly-premium",
+  "pro-monthly": "monthly-premium",
+  "pro-annual": "annual-premium",
+  "founding": "lifetime-access",
+}
+
+function normalizeAndValidatePlan(planParam: string | null): Product | null {
+  if (!planParam) return null
+  const normalizedId = PLAN_ALIASES[planParam.toLowerCase()] || planParam
+  return PRODUCTS.find((p) => p.id === normalizedId) || null
+}
+
 /* ── Main pricing content ──────────────────────────────────── */
 
 function PricingContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const planFromUrl = searchParams.get("plan")
-  const validPlan = PRODUCTS.find((p) => p.id === planFromUrl)
+  const validPlan = normalizeAndValidatePlan(planFromUrl)
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const [isNative, setIsNative] = useState(false)

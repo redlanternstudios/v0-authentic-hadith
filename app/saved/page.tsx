@@ -15,10 +15,12 @@ import {
   Filter,
   StickyNote,
   Share2,
+  Crown,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useQuota } from "@/hooks/use-quota"
 import { UsageBanner, ProUpgradeCTA } from "@/components/usage-banner"
+import { UpgradeModal } from "@/components/upgrade-modal"
 
 interface SavedHadith {
   id: string
@@ -47,7 +49,7 @@ const FOLDERS = [
 export default function SavedPage() {
   const router = useRouter()
   const supabase = getSupabaseBrowserClient()
-  const { quota } = useQuota()
+  const { quota, refresh: refreshQuota } = useQuota()
   const [savedHadiths, setSavedHadiths] = useState<SavedHadith[]>([])
   const [loading, setLoading] = useState(true)
   const [activeFolder, setActiveFolder] = useState("all")
@@ -55,6 +57,10 @@ export default function SavedPage() {
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
   const [noteText, setNoteText] = useState("")
   const [editingFolderId, setEditingFolderId] = useState<string | null>(null)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  
+  // Check if user has hit save limit
+  const saveLimitReached = quota && !quota.isPremium && quota.usage.savesRemaining <= 0
 
   const fetchSavedHadiths = useCallback(async () => {
     const {
@@ -206,6 +212,22 @@ export default function SavedPage() {
               label="Saved hadiths"
               className="mt-3"
             />
+          )}
+          
+          {/* Prominent upgrade CTA when limit reached */}
+          {saveLimitReached && (
+            <button
+              onClick={() => setShowUpgradeModal(true)}
+              className="w-full mt-3 p-3 rounded-xl bg-gradient-to-r from-[#C5A059]/10 to-[#E8C77D]/10 border border-[#C5A059]/30 flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors"
+            >
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#C5A059] to-[#E8C77D] flex items-center justify-center shrink-0">
+                <Crown className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-semibold text-foreground">Save Limit Reached</p>
+                <p className="text-xs text-muted-foreground">Upgrade to Pro for unlimited saves & folders</p>
+              </div>
+            </button>
           )}
         </div>
       </header>
@@ -393,8 +415,15 @@ export default function SavedPage() {
               </div>
             ))}
           </div>
-        )}
-      </main>
-    </div>
+)}
+  </main>
+  
+  {/* Upgrade Modal */}
+  <UpgradeModal 
+    open={showUpgradeModal} 
+    onClose={() => setShowUpgradeModal(false)} 
+    reason="save_limit" 
+  />
+  </div>
   )
 }
