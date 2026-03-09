@@ -313,7 +313,7 @@ export default function HadithDetailPage() {
           {enrichment && (
             <div className="mb-6 space-y-3">
               {enrichment.summary_line && (
-                <p className="text-base font-semibold text-[#C5A059] leading-snug">
+                <p className="text-base font-semibold text-[#8A6E3A] dark:text-[#D4B876] leading-snug">
                   {enrichment.summary_line}
                 </p>
               )}
@@ -343,15 +343,15 @@ export default function HadithDetailPage() {
 
           {/* Key Teaching - only shown when enrichment exists */}
           {enrichment?.key_teaching_en && (
-            <div className="mb-8 rounded-xl border border-[#C5A059]/20 bg-[#C5A059]/5 p-5">
+            <div className="mb-8 rounded-xl border border-[#8A6E3A]/20 bg-[#8A6E3A]/5 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <BookOpen className="w-4 h-4 text-[#C5A059]" />
-                <h3 className="text-sm font-semibold text-[#C5A059] uppercase tracking-wider">Key Teaching</h3>
+                <BookOpen className="w-4 h-4 text-[#8A6E3A] dark:text-[#C5A059]/80" />
+                <h3 className="text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 uppercase tracking-wider">Key Teaching</h3>
               </div>
               <p className="text-sm leading-relaxed text-foreground/80">{enrichment.key_teaching_en}</p>
               {enrichment.key_teaching_ar && (
                 <p
-                  className="mt-4 pt-4 border-t border-[#C5A059]/15 text-sm leading-[2] text-foreground/70 text-right"
+                  className="mt-4 pt-4 border-t border-[#8A6E3A]/15 text-sm leading-[2] text-foreground/70 text-right"
                   dir="rtl"
                   lang="ar"
                   style={{ fontFamily: "Amiri, serif" }}
@@ -365,7 +365,7 @@ export default function HadithDetailPage() {
           {/* Arabic Text */}
           <div className="mb-8" dir="rtl" lang="ar">
             <p
-              className="text-2xl sm:text-3xl leading-[2] text-foreground text-right"
+              className="text-xl sm:text-2xl leading-[2.2] text-foreground"
               style={{ fontFamily: "Amiri, serif" }}
             >
               {hadith.arabic_text}
@@ -377,7 +377,7 @@ export default function HadithDetailPage() {
 
           {/* English Translation */}
           <div className="mb-8" dir="ltr" lang="en">
-            <h3 className="text-sm font-semibold text-[#C5A059] mb-3 uppercase tracking-wider">Translation</h3>
+            <h3 className="text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 mb-3 uppercase tracking-wider">Translation</h3>
             {(() => {
               const { narrator: parsedNarrator, text: parsedText } = parseEnglishTranslation(hadith.english_translation)
               return (
@@ -387,7 +387,7 @@ export default function HadithDetailPage() {
                       Narrated by {parsedNarrator}
                     </p>
                   )}
-                  <p className="text-lg leading-relaxed text-foreground/80">{parsedText}</p>
+                  <p className="text-base leading-relaxed text-foreground/85">{parsedText}</p>
                 </>
               )
             })()}
