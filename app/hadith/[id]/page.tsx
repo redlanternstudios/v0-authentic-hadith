@@ -252,56 +252,56 @@ export default function HadithDetailPage() {
     <div className="min-h-screen marble-bg pb-20 md:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
               onClick={() => router.back()}
-              className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center hover:border-[#C5A059] transition-colors"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-background border border-border flex items-center justify-center hover:border-[#C5A059] transition-colors flex-shrink-0"
             >
-              <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
             </button>
-            <h1 className="text-lg font-semibold text-foreground">Hadith Detail</h1>
+            <h1 className="text-base sm:text-lg font-semibold text-foreground truncate">Hadith Detail</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button
               onClick={handleSave}
               className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center transition-all",
+                "w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all",
                 isSaved
                   ? "bg-gradient-to-r from-[#C5A059] to-[#E8C77D] text-white"
                   : "bg-background border border-border text-muted-foreground hover:border-[#C5A059]",
               )}
             >
-              <Bookmark className={cn("w-5 h-5", isSaved && "fill-current")} />
+              <Bookmark className={cn("w-4 h-4 sm:w-5 sm:h-5", isSaved && "fill-current")} />
             </button>
             <button
               onClick={() => router.push(`/share?hadith=${hadith?.id}`)}
-              className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground hover:border-[#C5A059] transition-colors"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground hover:border-[#C5A059] transition-colors"
               title="Create sharing card"
             >
-              <ImageIcon className="w-5 h-5" />
+              <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={handleShare}
-              className="w-10 h-10 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground hover:border-[#C5A059] transition-colors"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground hover:border-[#C5A059] transition-colors"
             >
-              <Share2 className="w-5 h-5" />
+              <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="gold-border rounded-2xl p-6 sm:p-8 premium-card">
+      <main className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        <div className="gold-border rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 premium-card">
           {/* Badges */}
-          <div className="flex items-center justify-between mb-6">
-            <span className="px-3 py-1.5 rounded-md text-xs font-bold text-white bg-gradient-to-r from-[#1B5E43] to-[#2D7A5B]">
+          <div className="flex items-center justify-between gap-2 mb-5 sm:mb-6">
+            <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-bold text-white bg-gradient-to-r from-[#1B5E43] to-[#2D7A5B] uppercase tracking-wide">
               {getCollectionDisplayName(hadith.collection)}
             </span>
             <span
               className={cn(
-                "px-3 py-1.5 rounded-md text-xs font-bold text-white bg-gradient-to-r",
+                "px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-bold text-white bg-gradient-to-r uppercase tracking-wide",
                 gradeColors[hadith.grade],
               )}
             >
@@ -343,10 +343,10 @@ export default function HadithDetailPage() {
 
           {/* Key Teaching - only shown when enrichment exists */}
           {enrichment?.key_teaching_en && (
-            <div className="mb-8 rounded-xl border border-[#8A6E3A]/20 bg-[#8A6E3A]/5 p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <BookOpen className="w-4 h-4 text-[#8A6E3A] dark:text-[#C5A059]/80" />
-                <h3 className="text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 uppercase tracking-wider">Key Teaching</h3>
+            <div className="mb-6 sm:mb-8 rounded-lg sm:rounded-xl border border-[#8A6E3A]/20 bg-[#8A6E3A]/5 p-4 sm:p-5">
+              <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#8A6E3A] dark:text-[#C5A059]/80" />
+                <h3 className="text-xs sm:text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 uppercase tracking-wider">Key Teaching</h3>
               </div>
               <p className="text-sm leading-relaxed text-foreground/80">{enrichment.key_teaching_en}</p>
               {enrichment.key_teaching_ar && (
@@ -363,9 +363,9 @@ export default function HadithDetailPage() {
           )}
 
           {/* Arabic Text */}
-          <div className="mb-8" dir="rtl" lang="ar">
+          <div className="mb-6 sm:mb-8" dir="rtl" lang="ar">
             <p
-              className="text-xl sm:text-2xl leading-[2.2] text-foreground"
+              className="text-lg sm:text-xl md:text-2xl leading-[2] sm:leading-[2.2] text-foreground"
               style={{ fontFamily: "Amiri, serif" }}
             >
               {hadith.arabic_text}
@@ -373,40 +373,40 @@ export default function HadithDetailPage() {
           </div>
 
           {/* Divider */}
-          <div className="gold-divider mb-8" />
+          <div className="gold-divider mb-6 sm:mb-8" />
 
           {/* English Translation */}
-          <div className="mb-8" dir="ltr" lang="en">
-            <h3 className="text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 mb-3 uppercase tracking-wider">Translation</h3>
+          <div className="mb-6 sm:mb-8" dir="ltr" lang="en">
+            <h3 className="text-xs sm:text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 mb-2 sm:mb-3 uppercase tracking-wider">Translation</h3>
             {(() => {
               const { narrator: parsedNarrator, text: parsedText } = parseEnglishTranslation(hadith.english_translation)
               return (
                 <>
                   {parsedNarrator && (
-                    <p className="text-sm font-medium text-muted-foreground italic mb-2">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground italic mb-2">
                       Narrated by {parsedNarrator}
                     </p>
                   )}
-                  <p className="text-base leading-relaxed text-foreground/85">{parsedText}</p>
+                  <p className="text-sm sm:text-base leading-relaxed text-foreground/85">{parsedText}</p>
                 </>
               )
             })()}
           </div>
 
           {/* Metadata */}
-          <div className="bg-muted/50 rounded-xl p-4 space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Reference</span>
-              <span className="text-foreground font-medium">{hadith.reference}</span>
+          <div className="bg-muted/50 rounded-lg sm:rounded-xl p-3 sm:p-4 space-y-2">
+            <div className="flex items-center justify-between text-xs sm:text-sm gap-2">
+              <span className="text-muted-foreground flex-shrink-0">Reference</span>
+              <span className="text-foreground font-medium text-right truncate">{hadith.reference}</span>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Narrator</span>
-              <span className="text-foreground font-medium">
+            <div className="flex items-center justify-between text-xs sm:text-sm gap-2">
+              <span className="text-muted-foreground flex-shrink-0">Narrator</span>
+              <span className="text-foreground font-medium text-right truncate">
                 {hadith.narrator || parseEnglishTranslation(hadith.english_translation).narrator || "Unknown"}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Grade</span>
+            <div className="flex items-center justify-between text-xs sm:text-sm gap-2">
+              <span className="text-muted-foreground flex-shrink-0">Grade</span>
               <span className="text-foreground font-medium">{gradeLabels[hadith.grade]}</span>
             </div>
           </div>
