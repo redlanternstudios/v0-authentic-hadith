@@ -67,6 +67,10 @@ export const translations = {
   daif: { en: "Da'if (Weak)", ar: "ضعيف" },
   shareHadith: { en: "Share Hadith", ar: "مشاركة الحديث" },
   saveHadith: { en: "Save Hadith", ar: "حفظ الحديث" },
+  showArabic: { en: "Arabic", ar: "العربية" },
+  showEnglish: { en: "English", ar: "الإنجليزية" },
+  showBoth: { en: "Both", ar: "كلاهما" },
+  translation: { en: "Translation", ar: "الترجمة" },
   
   // Collections
   sahihBukhari: { en: "Sahih Bukhari", ar: "صحيح البخاري" },

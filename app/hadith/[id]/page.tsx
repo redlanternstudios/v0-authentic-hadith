@@ -9,6 +9,8 @@ import { DiscussionSection } from "@/components/hadith/discussion-section"
 import { cn } from "@/lib/utils"
 import { parseEnglishTranslation, getCollectionDisplayName } from "@/lib/hadith-utils"
 import { trackActivity } from "@/app/actions/track-activity"
+import { useLanguage } from "@/hooks/use-language"
+import { Languages } from "lucide-react"
 
 interface Hadith {
   id: string
@@ -22,15 +24,31 @@ interface Hadith {
   narrator: string
 }
 
+type DisplayMode = "arabic" | "english" | "both"
+
 export default function HadithDetailPage() {
   const router = useRouter()
   const params = useParams()
   const supabase = getSupabaseBrowserClient()
+  const { language, isArabicPrimary, showBoth, t } = useLanguage()
   const [hadith, setHadith] = useState<Hadith | null>(null)
   const [isSaved, setIsSaved] = useState(false)
   const [isRead, setIsRead] = useState(false)
   const [loading, setLoading] = useState(true)
   const [summarizing, setSummarizing] = useState(false)
+  
+  // Initialize display mode based on user's language preference
+  const [displayMode, setDisplayMode] = useState<DisplayMode>(() => {
+    if (showBoth) return "both"
+    if (isArabicPrimary) return "arabic"
+    return "both" // Default to both so users always see Arabic
+  })
+  
+  // Update display mode when language preference changes
+  useEffect(() => {
+    if (showBoth) setDisplayMode("both")
+    else if (isArabicPrimary) setDisplayMode("arabic")
+  }, [isArabicPrimary, showBoth])
   const [enrichment, setEnrichment] = useState<{
     summary_line: string | null
     key_teaching_en: string | null
@@ -362,36 +380,85 @@ export default function HadithDetailPage() {
             </div>
           )}
 
-          {/* Arabic Text */}
-          <div className="mb-6 sm:mb-8" dir="rtl" lang="ar">
-            <p
-              className="text-lg sm:text-xl md:text-2xl leading-[2] sm:leading-[2.2] text-foreground"
-              style={{ fontFamily: "Amiri, serif" }}
+          {/* Language Toggle */}
+          <div className="flex items-center justify-center gap-1 mb-6 p-1 bg-muted/50 rounded-lg">
+            <button
+              onClick={() => setDisplayMode("arabic")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all",
+                displayMode === "arabic"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              {hadith.arabic_text}
-            </p>
+              <span className="hidden sm:inline">العربية</span>
+              <span className="sm:hidden">AR</span>
+            </button>
+            <button
+              onClick={() => setDisplayMode("both")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all",
+                displayMode === "both"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Languages className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Both</span>
+            </button>
+            <button
+              onClick={() => setDisplayMode("english")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all",
+                displayMode === "english"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <span className="hidden sm:inline">English</span>
+              <span className="sm:hidden">EN</span>
+            </button>
           </div>
 
-          {/* Divider */}
-          <div className="gold-divider mb-6 sm:mb-8" />
+          {/* Arabic Text - shown when mode is "arabic" or "both" */}
+          {(displayMode === "arabic" || displayMode === "both") && (
+            <div className={cn("mb-6 sm:mb-8", displayMode === "both" && "pb-6 sm:pb-8 border-b border-border/50")} dir="rtl" lang="ar">
+              {displayMode === "both" && (
+                <h3 className="text-xs sm:text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 mb-2 sm:mb-3 uppercase tracking-wider text-right">النص العربي</h3>
+              )}
+              <p
+                className="text-lg sm:text-xl md:text-2xl leading-[2] sm:leading-[2.2] text-foreground"
+                style={{ fontFamily: "Amiri, serif" }}
+              >
+                {hadith.arabic_text}
+              </p>
+            </div>
+          )}
 
-          {/* English Translation */}
-          <div className="mb-6 sm:mb-8" dir="ltr" lang="en">
-            <h3 className="text-xs sm:text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 mb-2 sm:mb-3 uppercase tracking-wider">Translation</h3>
-            {(() => {
-              const { narrator: parsedNarrator, text: parsedText } = parseEnglishTranslation(hadith.english_translation)
-              return (
-                <>
-                  {parsedNarrator && (
-                    <p className="text-xs sm:text-sm font-medium text-muted-foreground italic mb-2">
-                      Narrated by {parsedNarrator}
-                    </p>
-                  )}
-                  <p className="text-sm sm:text-base leading-relaxed text-foreground/85">{parsedText}</p>
-                </>
-              )
-            })()}
-          </div>
+          {/* Divider - only shown when displaying both */}
+          {displayMode === "both" && <div className="gold-divider mb-6 sm:mb-8" />}
+
+          {/* English Translation - shown when mode is "english" or "both" */}
+          {(displayMode === "english" || displayMode === "both") && (
+            <div className="mb-6 sm:mb-8" dir="ltr" lang="en">
+              {displayMode === "both" && (
+                <h3 className="text-xs sm:text-sm font-semibold text-[#8A6E3A] dark:text-[#C5A059]/80 mb-2 sm:mb-3 uppercase tracking-wider">Translation</h3>
+              )}
+              {(() => {
+                const { narrator: parsedNarrator, text: parsedText } = parseEnglishTranslation(hadith.english_translation)
+                return (
+                  <>
+                    {parsedNarrator && (
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground italic mb-2">
+                        Narrated by {parsedNarrator}
+                      </p>
+                    )}
+                    <p className="text-sm sm:text-base leading-relaxed text-foreground/85">{parsedText}</p>
+                  </>
+                )
+              })()}
+            </div>
+          )}
 
           {/* Metadata */}
           <div className="bg-muted/50 rounded-lg sm:rounded-xl p-3 sm:p-4 space-y-2">
