@@ -30,7 +30,7 @@ export default function HadithDetailPage() {
   const router = useRouter()
   const params = useParams()
   const supabase = getSupabaseBrowserClient()
-  const { language, isArabicPrimary, showBoth, t } = useLanguage()
+  const { isArabicPrimary, showBoth } = useLanguage()
   const [hadith, setHadith] = useState<Hadith | null>(null)
   const [isSaved, setIsSaved] = useState(false)
   const [isRead, setIsRead] = useState(false)
