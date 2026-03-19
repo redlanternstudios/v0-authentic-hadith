@@ -162,7 +162,7 @@ export function Sidebar() {
       <div
         className={cn(
           "flex items-center gap-3 p-4 border-b border-border",
-          collapsed ? "justify-center" : "px-5",
+          collapsed ? "justify-center" : "px-4",
         )}
       >
         <div className="relative w-10 h-10 flex-shrink-0">
@@ -174,11 +174,11 @@ export function Sidebar() {
           />
         </div>
         {!collapsed && (
-          <div className="overflow-hidden">
-            <h1 className="font-semibold gold-text text-lg leading-tight whitespace-nowrap">
+          <div className="min-w-0 flex-1">
+            <h1 className="font-semibold gold-text text-base leading-tight truncate">
               {t("authenticHadith")}
             </h1>
-            <p className="text-xs text-muted-foreground whitespace-nowrap">
+            <p className="text-[11px] text-muted-foreground truncate">
               {t("verifiedSources")}
             </p>
           </div>

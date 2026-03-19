@@ -49,8 +49,6 @@ export async function POST(req: Request) {
       return Response.json({ error: "Hadith text too short to summarize" }, { status: 400 })
     }
 
-    console.log("[v0] Calling AI for hadith:", hadithId, "text length:", text.length)
-
     const { output } = await generateText({
       model: "openai/gpt-4o-mini",
       prompt: `You are a hadith scholar. Analyze this hadith and return JSON.
