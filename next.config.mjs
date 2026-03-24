@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: "/v0/rsemeah-addfa863",
   typescript: {
     ignoreBuildErrors: true,
   },
