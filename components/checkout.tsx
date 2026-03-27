@@ -24,10 +24,18 @@ export default function Checkout({ productId }: { productId: string }) {
       let message = "Failed to start checkout. Please try again."
       if (err instanceof Error) {
         message = err.message
+        // Clean up any server-side error prefixes
+        if (message.includes("Error: ")) {
+          message = message.replace(/^Error:\s*/i, "")
+        }
       }
-      // Check for common Stripe errors
+      // Check for common Stripe errors and provide helpful messages
       if (message.includes("No such price") || message.includes("Invalid price")) {
         message = "This plan is temporarily unavailable. Please try another plan or contact support."
+      } else if (message.includes("logged in") || message.includes("must be logged")) {
+        message = "Please sign in to continue with your purchase."
+      } else if (message.includes("configuration") || message.includes("API Key")) {
+        message = "Payment system is temporarily unavailable. Please try again later."
       }
       setError(message)
       throw err
