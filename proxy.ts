@@ -1,8 +1,6 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
-export const runtime = "nodejs"
-
 const publicPaths = ["/", "/pricing", "/checkout/success", "/reset-password"]
 const publicPrefixes = ["/api", "/auth", "/admin", "/about", "/privacy", "/terms", "/contact", "/my-hadith"]
 const authPages = ["/login"]
