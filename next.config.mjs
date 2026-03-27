@@ -6,7 +6,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-
+  turbopack: {
+    root: process.cwd(),
+  },
+  serverExternalPackages: ["@supabase/ssr"],
 }
 
 export default nextConfig
