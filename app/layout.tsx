@@ -33,11 +33,18 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
+        url: "/favicon.jpg",
+        sizes: "32x32",
+        type: "image/jpeg",
+      },
+      {
         url: "/icon-light-32x32.png",
+        sizes: "32x32",
         media: "(prefers-color-scheme: light)",
       },
       {
         url: "/icon-dark-32x32.png",
+        sizes: "32x32",
         media: "(prefers-color-scheme: dark)",
       },
       {
@@ -45,7 +52,24 @@ export const metadata: Metadata = {
         type: "image/svg+xml",
       },
     ],
+    shortcut: "/favicon.jpg",
     apple: "/apple-icon.png",
+  },
+  openGraph: {
+    title: "Authentic Hadith - Learn From Verified Sources",
+    description: "Access verified hadith collections, guided learning paths, daily sunnah practices, stories of the prophets and companions, and AI-powered study tools.",
+    url: "https://authentichadith.app",
+    siteName: "Authentic Hadith",
+    images: [
+      {
+        url: "/favicon.jpg",
+        width: 512,
+        height: 512,
+        alt: "Authentic Hadith App Icon",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
 }
 
