@@ -42,16 +42,17 @@ export function AuthForm() {
       return
     }
 
-    // Ensure profile exists
+    // Sign in successful
     if (data?.user) {
+      // Ensure profile exists (create if needed)
       const { data: existingProfile } = await supabase
         .from("profiles")
-        .select("id")
+        .select("id, subscription_tier")
         .eq("user_id", data.user.id)
         .single()
 
       if (!existingProfile) {
-        const { error: profileErr } = await supabase.from("profiles").insert({
+        await supabase.from("profiles").insert({
           user_id: data.user.id,
           name: data.user.user_metadata?.full_name || data.user.user_metadata?.name || null,
           avatar_url: data.user.user_metadata?.avatar_url || null,
@@ -59,7 +60,6 @@ export function AuthForm() {
           subscription_tier: "free",
           subscription_status: "none",
         })
-        // Profile create error is non-fatal
       }
 
       // Check if user has completed onboarding
@@ -70,10 +70,12 @@ export function AuthForm() {
         .single()
 
       if (prefs?.onboarded) {
+        // User has onboarded - set cookies and go to home
         document.cookie = "qbos_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
         document.cookie = "qbos_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
         router.push(redirectTo || "/home")
       } else {
+        // User hasn't onboarded - send to onboarding
         const onboardingUrl = redirectTo
           ? `/onboarding?redirect=${encodeURIComponent(redirectTo)}`
           : "/onboarding"
