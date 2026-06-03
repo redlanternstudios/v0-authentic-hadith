@@ -61,6 +61,19 @@ export async function startCheckoutSession(productId: string) {
     }
 
     let customerId = profile?.stripe_customer_id
+    let needsCustomerUpdate = false
+
+    // Validate existing customer ID if present
+    if (customerId) {
+      try {
+        await stripe.customers.retrieve(customerId)
+      } catch (err: unknown) {
+        // Customer doesn't exist in Stripe - clear it so we create a new one
+        console.warn(`Stored Stripe customer ${customerId} not found, creating new one`)
+        customerId = null
+        needsCustomerUpdate = true
+      }
+    }
 
     if (!customerId) {
       const customer = await stripe.customers.create({
@@ -72,8 +85,11 @@ export async function startCheckoutSession(productId: string) {
       })
 
       customerId = customer.id
+      needsCustomerUpdate = true
+    }
 
-      // Update or create profile with stripe_customer_id
+    // Update profile with new stripe_customer_id if needed
+    if (needsCustomerUpdate) {
       const { error: updateError } = await supabase
         .from("profiles")
         .upsert({ 
@@ -169,6 +185,9 @@ export async function startCheckoutSession(productId: string) {
     if (error instanceof Error) {
       if (error.message.includes("No such price")) {
         throw new Error("This subscription plan is not configured correctly. Please contact support.")
+      }
+      if (error.message.includes("No such customer")) {
+        throw new Error("Customer validation failed. Please try again.")
       }
       if (error.message.includes("Invalid API Key")) {
         throw new Error("Payment system configuration error. Please contact support.")
