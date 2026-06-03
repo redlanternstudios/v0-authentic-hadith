@@ -1,6 +1,6 @@
 "use server"
 
-import { stripe } from "@/lib/stripe"
+import { getStripe } from "@/lib/stripe"
 import { getProductById, PRODUCTS } from "@/lib/products"
 import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { getStripePriceId, BILLING_CONFIG } from "@/lib/billing/config"
@@ -20,6 +20,15 @@ function normalizeProductId(productId: string): string {
 }
 
 export async function startCheckoutSession(productId: string) {
+  // Get the Stripe instance early to fail fast if not configured
+  let stripe: ReturnType<typeof getStripe>
+  try {
+    stripe = getStripe()
+  } catch (err) {
+    console.error("Stripe initialization error:", err)
+    throw new Error("Payment system is not configured. Please contact support.")
+  }
+
   try {
     // Normalize the product ID in case an alias was passed
     const normalizedId = normalizeProductId(productId)

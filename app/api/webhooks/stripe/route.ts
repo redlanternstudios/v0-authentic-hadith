@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server"
-import { stripe } from "@/lib/stripe"
+import { getStripe } from "@/lib/stripe"
 import { getSupabaseAdmin } from "@/lib/supabase/admin"
 import { getTierFromProductId } from "@/lib/products"
 import type Stripe from "stripe"
 
 export async function POST(request: Request) {
+  const stripe = getStripe()
   const body = await request.text()
   const signature = request.headers.get("stripe-signature")
 
@@ -105,7 +106,7 @@ async function handleCheckoutCompleted(
 
   if (session.mode === "subscription") {
     const subscriptionId = session.subscription as string
-    const sub = await stripe.subscriptions.retrieve(subscriptionId)
+    const sub = await getStripe().subscriptions.retrieve(subscriptionId)
 
     const tier = getTierFromProductId(productId || "")
     const status = sub.status === "trialing" ? "trialing" : "active"
@@ -232,7 +233,7 @@ async function handleInvoicePaymentSucceeded(
 
   if (!subscriptionId) return
 
-  const sub = await stripe.subscriptions.retrieve(subscriptionId)
+  const sub = await getStripe().subscriptions.retrieve(subscriptionId)
 
   await supabase
     .from("subscriptions")
