@@ -27,25 +27,40 @@ const USER_DATA_TABLES = [
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    if (body?.confirmation !== "DELETE MY ACCOUNT") {
+    // Accept the confirmation string the mobile app actually sends ("DELETE",
+    // delete-account.tsx) AND the legacy web string. Mismatch here = silent
+    // Guideline 5.1.1 rejection (account deletion fails). See FIX-065.
+    const confirmation = body?.confirmation
+    if (confirmation !== "DELETE" && confirmation !== "DELETE MY ACCOUNT") {
       return NextResponse.json(
-        { error: "Invalid confirmation. Please type 'DELETE MY ACCOUNT' to proceed." },
+        { error: "Invalid confirmation. Please type 'DELETE' to proceed." },
         { status: 400 }
       )
     }
 
-    const supabase = await createClient()
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
+    const admin = getSupabaseAdmin()
 
-    if (authError || !user) {
+    // Authenticate via EITHER the mobile Bearer token OR the web cookie session.
+    // The mobile app (React Native) has no cookies — it sends Authorization:
+    // Bearer <access_token>. The previous cookie-only path 401'd every mobile
+    // delete request even with a valid session. See FIX-065.
+    let user = null
+    const authHeader = request.headers.get("authorization") || ""
+    const bearer = authHeader.replace(/^Bearer\s+/i, "").trim()
+    if (bearer) {
+      const { data, error } = await admin.auth.getUser(bearer)
+      if (!error) user = data.user
+    } else {
+      const supabase = await createClient()
+      const { data, error } = await supabase.auth.getUser()
+      if (!error) user = data.user
+    }
+
+    if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
     }
 
     const userId = user.id
-    const admin = getSupabaseAdmin()
     const deletionErrors: string[] = []
 
     for (const table of USER_DATA_TABLES) {
