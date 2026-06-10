@@ -85,7 +85,17 @@ export async function POST(request: Request) {
       )
     }
 
-    await supabase.auth.signOut()
+    // Best-effort server cookie sign-out (web only). The mobile path has no
+    // cookie client, so this must never throw — the user is already deleted.
+    // Leaving the old unconditional `supabase.auth.signOut()` here referenced an
+    // undefined client on the Bearer path and 500'd AFTER a successful delete
+    // (account gone, app showed "Deletion Failed"). See FIX-065.
+    try {
+      const cookieClient = await createClient()
+      await cookieClient.auth.signOut()
+    } catch {
+      // no cookie session (mobile) — nothing to sign out
+    }
 
     const response = NextResponse.json({
       success: true,
