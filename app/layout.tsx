@@ -62,14 +62,20 @@ export const metadata: Metadata = {
     siteName: "Authentic Hadith",
     images: [
       {
-        url: "/favicon.jpg",
-        width: 512,
-        height: 512,
-        alt: "Authentic Hadith App Icon",
+        url: "/images/gemini-generated-image-xw5svjxw5svjxw5s.jpeg",
+        width: 1024,
+        height: 1024,
+        alt: "Authentic Hadith - Learn From Verified Sources",
       },
     ],
     locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Authentic Hadith - Learn From Verified Sources",
+    description: "Access verified hadith collections, guided learning paths, and AI-powered study tools from authenticated sources.",
+    images: ["/images/gemini-generated-image-xw5svjxw5svjxw5s.jpeg"],
   },
 }
 

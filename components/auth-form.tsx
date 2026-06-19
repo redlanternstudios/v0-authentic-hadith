@@ -30,7 +30,6 @@ export function AuthForm() {
     setLoading(true)
     setError(null)
 
-    console.log("[v0] Sign in attempt for:", email)
     const supabase = getSupabaseBrowserClient()
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -38,13 +37,10 @@ export function AuthForm() {
     })
 
     if (error) {
-      console.log("[v0] Sign in error:", error.message)
       setError(error.message)
       setLoading(false)
       return
     }
-
-    console.log("[v0] Sign in successful, user:", data?.user?.id)
     // Sign in successful
     if (data?.user) {
       // Ensure profile exists (create if needed)
