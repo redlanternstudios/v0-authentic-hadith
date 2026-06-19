@@ -1,4 +1,5 @@
 import { generateText, Output } from "ai"
+import { deepseekChat } from "@/lib/ai/deepseek"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 
@@ -152,7 +153,7 @@ ${hadithContextStr}
 Generate exactly ${count} questions with varying difficulty levels. Focus on testing genuine understanding of the teachings.`
 
     const { output } = await generateText({
-      model: "openai/gpt-4o-mini",
+      model: deepseekChat,
       output: Output.object({ schema: quizQuestionSchema }),
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
