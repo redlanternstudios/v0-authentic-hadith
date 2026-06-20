@@ -75,9 +75,9 @@ export default function LandingPage() {
           {[
             {
               icon: BookOpen,
-              title: "Six Major Collections",
+              title: "8 Authentic Collections",
               description:
-                "Browse Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami at-Tirmidhi, Sunan an-Nasai, and Sunan Ibn Majah.",
+                "Browse Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami at-Tirmidhi, Sunan an-Nasai, Sunan Ibn Majah, Muwatta Malik, and Musnad Ahmad.",
             },
             {
               icon: Search,
