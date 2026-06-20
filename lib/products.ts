@@ -19,7 +19,7 @@ export interface Product {
 /** Free tier limits -- used by quota RPCs and upgrade prompts */
 export const FREE_TIER_LIMITS = {
   maxSavedHadith: 40,
-  aiExplanationsPerDay: 3,
+  aiExplanationsPerDay: 5,
   quizzesPerDay: 1,
   learningPaths: "beginner" as const,
 } as const
@@ -33,7 +33,7 @@ export const TIER_FEATURES = {
     "Basic search",
     "Topic browsing",
     "Save up to 40 hadiths",
-    "3 AI explanations per day",
+    "5 AI explanations per day",
     "Beginner learning paths",
     "1 quiz per day",
   ],

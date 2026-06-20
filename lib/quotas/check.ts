@@ -27,15 +27,23 @@ export async function checkAIQuota(userId: string): Promise<QuotaCheckResult> {
 
     const tier = (profile?.subscription_tier as "free" | "premium" | "lifetime") ?? "free"
 
-    // 2. Set limits based on tier
-    const limits: Record<string, { daily: number; monthly: number }> = {
-      lifetime: { daily: 100, monthly: 3000 },
-      premium: { daily: 50, monthly: 1500 },
-      free: { daily: 5, monthly: 30 },
+    // 2. Paid tiers are unlimited — bypass all quota checks immediately
+    if (tier === "premium" || tier === "lifetime") {
+      return {
+        allowed: true,
+        daily_remaining: 9999,
+        monthly_remaining: 9999,
+        daily_limit: 9999,
+        monthly_limit: 9999,
+        tier,
+      }
     }
-    const { daily: dailyLimit, monthly: monthlyLimit } = limits[tier] ?? limits.free
 
-    // 3. Count today's usage
+    // 3. Free tier limits
+    const dailyLimit = 5
+    const monthlyLimit = 30
+
+    // 4. Count today's usage
     const today = new Date().toISOString().split("T")[0]
     const { data: todayUsage } = await supabase
       .from("ai_usage")
@@ -46,7 +54,7 @@ export async function checkAIQuota(userId: string): Promise<QuotaCheckResult> {
 
     const dailyUsed = todayUsage?.query_count ?? 0
 
-    // 4. Count this month's usage
+    // 5. Count this month's usage
     const monthStart = `${today.substring(0, 7)}-01`
     const { data: monthUsage } = await supabase
       .from("ai_usage")

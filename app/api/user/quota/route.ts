@@ -47,29 +47,43 @@ export async function GET() {
       .eq("user_id", user.id)
       .gte("created_at", todayStart.toISOString())
 
-    // Limits based on tier
-    const limits = {
-      free: { saves: 40, aiPerDay: 5, quizzesPerDay: 1 },
-      premium: { saves: Infinity, aiPerDay: 50, quizzesPerDay: Infinity },
-      lifetime: { saves: Infinity, aiPerDay: 100, quizzesPerDay: Infinity },
+    const isPremium = tier !== "free"
+
+    // Paid tiers: unlimited (9999 sentinel — safe for JSON, used by UI to show "Unlimited")
+    if (isPremium) {
+      return Response.json({
+        tier,
+        isPremium: true,
+        usage: {
+          saves: savedCount ?? 0,
+          savesLimit: 9999,
+          savesRemaining: 9999,
+          aiToday: aiUsage?.query_count ?? 0,
+          aiDailyLimit: 9999,
+          aiRemaining: 9999,
+          quizzesToday: quizCount ?? 0,
+          quizDailyLimit: 9999,
+          quizzesRemaining: 9999,
+        },
+      })
     }
 
-    const userLimits = limits[tier] ?? limits.free
-    const isPremium = tier !== "free"
+    // Free tier limits (aligned: 5 AI/day, 1 quiz/day, 40 saves)
+    const FREE = { saves: 40, aiPerDay: 5, quizzesPerDay: 1 }
 
     return Response.json({
       tier,
-      isPremium,
+      isPremium: false,
       usage: {
         saves: savedCount ?? 0,
-        savesLimit: userLimits.saves,
-        savesRemaining: Math.max(userLimits.saves - (savedCount ?? 0), 0),
+        savesLimit: FREE.saves,
+        savesRemaining: Math.max(FREE.saves - (savedCount ?? 0), 0),
         aiToday: aiUsage?.query_count ?? 0,
-        aiDailyLimit: userLimits.aiPerDay,
-        aiRemaining: Math.max(userLimits.aiPerDay - (aiUsage?.query_count ?? 0), 0),
+        aiDailyLimit: FREE.aiPerDay,
+        aiRemaining: Math.max(FREE.aiPerDay - (aiUsage?.query_count ?? 0), 0),
         quizzesToday: quizCount ?? 0,
-        quizDailyLimit: userLimits.quizzesPerDay,
-        quizzesRemaining: Math.max(userLimits.quizzesPerDay - (quizCount ?? 0), 0),
+        quizDailyLimit: FREE.quizzesPerDay,
+        quizzesRemaining: Math.max(FREE.quizzesPerDay - (quizCount ?? 0), 0),
       },
     })
   } catch (err) {
