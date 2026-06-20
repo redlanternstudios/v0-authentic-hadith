@@ -70,8 +70,8 @@ export function AuthForm() {
 
       if (prefs?.onboarded) {
         // User has onboarded - set cookies and go to home
-        document.cookie = "qbos_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
-        document.cookie = "qbos_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
+        document.cookie = "ah_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
+        document.cookie = "ah_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
         router.push(redirectTo || "/home")
       } else {
         // User hasn't onboarded - send to onboarding

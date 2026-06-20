@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       success: true,
       deletionErrors: deletionErrors.length > 0 ? deletionErrors : undefined,
     })
-    response.cookies.set("qbos_onboarded", "", { path: "/", maxAge: 0 })
+    response.cookies.set("ah_onboarded", "", { path: "/", maxAge: 0 })
     return response
   } catch (error) {
     console.error("Account deletion error:", error)

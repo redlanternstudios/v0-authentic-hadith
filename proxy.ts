@@ -54,8 +54,8 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const hasOnboarded = request.cookies.get("qbos_onboarded")?.value === "1"
-  const hasSafetyAgreed = request.cookies.get("qbos_safety_agreed")?.value === "1"
+  const hasOnboarded = request.cookies.get("ah_onboarded")?.value === "1"
+  const hasSafetyAgreed = request.cookies.get("ah_safety_agreed")?.value === "1"
 
   // Auth page: redirect logged-in users away from login
   if (isAuthPage && user) {
