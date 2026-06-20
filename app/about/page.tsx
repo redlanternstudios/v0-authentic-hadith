@@ -166,7 +166,7 @@ export default function AboutPage() {
           {/* Stats */}
           <div className="mt-6 grid grid-cols-3 gap-3">
             {[
-              { label: "Hadith", value: "36,246" },
+              { label: "Hadith", value: "14,444" },
               { label: "Collections", value: "8" },
               { label: "Grading", value: "Sahih+" },
             ].map((stat) => (
@@ -300,7 +300,7 @@ export default function AboutPage() {
               <div className="space-y-2 text-sm font-sans">
                 {[
                   { label: "App Version", value: "1.0.0" },
-                  { label: "Database", value: "36,246 hadith" },
+                  { label: "Database", value: "14,444 hadith" },
                   { label: "Last Update", value: "Feb 12, 2026" },
                   { label: "Collections", value: "8 sources" },
                 ].map((row) => (
