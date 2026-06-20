@@ -91,12 +91,6 @@ function cleanHadith(h: any) {
   const collectionNames: Record<string, string> = {
     "sahih-bukhari": "Sahih al-Bukhari",
     "sahih-muslim": "Sahih Muslim",
-    "sunan-abu-dawud": "Sunan Abu Dawud",
-    "jami-tirmidhi": "Jami at-Tirmidhi",
-    "sunan-nasai": "Sunan an-Nasai",
-    "sunan-ibn-majah": "Sunan Ibn Majah",
-    "muwatta-malik": "Muwatta Malik",
-    "musnad-ahmad": "Musnad Ahmad",
   }
 
   return {

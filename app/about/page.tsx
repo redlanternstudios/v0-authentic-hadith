@@ -19,12 +19,6 @@ import { IslamicPattern } from "@/components/islamic-pattern"
 const collections = [
   "Sahih al-Bukhari",
   "Sahih Muslim",
-  "Sunan Abu Dawud",
-  "Jami' at-Tirmidhi",
-  "Sunan an-Nasa'i",
-  "Sunan Ibn Majah",
-  "Muwatta Malik",
-  "Musnad Ahmad",
 ]
 
 const aiDoes = [
@@ -133,7 +127,7 @@ export default function AboutPage() {
 
           <h3 className="text-base font-semibold text-foreground mb-3 font-sans">Collections Included</h3>
           <p className="text-sm text-muted-foreground mb-4 font-sans">
-            All hadith in this app are drawn from the following authenticated collections:
+            All 14,444 hadiths are drawn exclusively from Al-Sahihayn — the two most rigorously authenticated collections in Islam:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
             {collections.map((c) => (
@@ -166,9 +160,9 @@ export default function AboutPage() {
           {/* Stats */}
           <div className="mt-6 grid grid-cols-3 gap-3">
             {[
-              { label: "Hadith", value: "36,246" },
-              { label: "Collections", value: "8" },
-              { label: "Grading", value: "Sahih+" },
+              { label: "Hadith", value: "14,444" },
+              { label: "Collections", value: "Al-Sahihayn" },
+              { label: "Grading", value: "Sahih" },
             ].map((stat) => (
               <div key={stat.label} className="rounded-lg border border-border bg-card p-3 text-center">
                 <p className="text-lg sm:text-xl font-semibold gold-text font-serif">{stat.value}</p>
@@ -300,9 +294,9 @@ export default function AboutPage() {
               <div className="space-y-2 text-sm font-sans">
                 {[
                   { label: "App Version", value: "1.0.0" },
-                  { label: "Database", value: "36,246 hadith" },
-                  { label: "Last Update", value: "Feb 12, 2026" },
-                  { label: "Collections", value: "8 sources" },
+                  { label: "Database", value: "14,444 hadith" },
+                  { label: "Last Update", value: "Jun 2026" },
+                  { label: "Collections", value: "Al-Sahihayn" },
                 ].map((row) => (
                   <div key={row.label} className="flex justify-between items-center">
                     <span className="text-muted-foreground">{row.label}</span>
