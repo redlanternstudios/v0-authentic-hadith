@@ -46,8 +46,8 @@ export default function LandingPage() {
           <span className="gold-text gold-text-heading">Prophetic Wisdom</span>
         </h1>
         <p className="mt-4 md:mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed text-pretty">
-          Access verified collections of prophetic traditions from the six major hadith
-          compilations, meticulously authenticated and preserved for generations of
+          Access 14,444 verified prophetic traditions across 8 authentic hadith
+          collections, meticulously authenticated and preserved for generations of
           knowledge seekers.
         </p>
         <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
