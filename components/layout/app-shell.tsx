@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation"
 import { Sidebar } from "./sidebar"
 import { MobileTopBar } from "./mobile-top-bar"
 import { BottomNavigation } from "@/components/home/bottom-navigation"
-import { SidebarProvider, useSidebar } from "@/lib/sidebar-context"
 import { cn } from "@/lib/utils"
 
 // Pages that should NOT show the sidebar/navigation
@@ -15,10 +14,10 @@ interface AppShellProps {
   children: ReactNode
 }
 
-function AppShellInner({ children }: AppShellProps) {
+export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname()
-  const { collapsed } = useSidebar()
 
+  // Check if current path should be excluded
   const isExcluded = excludedPaths.some((path) => pathname === path || (path !== "/" && pathname.startsWith(path)))
 
   if (isExcluded) {
@@ -30,15 +29,15 @@ function AppShellInner({ children }: AppShellProps) {
       {/* Desktop Sidebar */}
       <Sidebar />
 
-      {/* Mobile Top Bar */}
+      {/* Mobile Top Bar with back/home buttons */}
       <MobileTopBar />
 
-      {/* Main Content — shifts with sidebar collapse state */}
+      {/* Main Content - Shifted right on desktop (xl+) to account for sidebar */}
       <div
         className={cn(
           "transition-all duration-300",
-          collapsed ? "xl:ml-[72px]" : "xl:ml-[260px]",
-          "pb-20 xl:pb-0",
+          "xl:ml-[260px]", // Default sidebar width on extra large screens
+          "pb-20 xl:pb-0", // Bottom padding for mobile/tablet nav
         )}
       >
         {children}
@@ -47,13 +46,5 @@ function AppShellInner({ children }: AppShellProps) {
       {/* Mobile Bottom Navigation */}
       <BottomNavigation />
     </div>
-  )
-}
-
-export function AppShell({ children }: AppShellProps) {
-  return (
-    <SidebarProvider>
-      <AppShellInner>{children}</AppShellInner>
-    </SidebarProvider>
   )
 }

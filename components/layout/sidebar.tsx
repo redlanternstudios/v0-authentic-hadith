@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
-import { useSidebar } from "@/lib/sidebar-context"
 import { getSupabaseBrowserClient } from "@/lib/supabase/client"
 import { useLanguage } from "@/hooks/use-language"
 import type { TranslationKey } from "@/lib/i18n/translations"
@@ -98,7 +97,7 @@ const bottomNavItems: { id: string; icon: typeof User; labelKey: TranslationKey;
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { collapsed, setCollapsed } = useSidebar()
+  const [collapsed, setCollapsed] = useState(false)
   const [userName, setUserName] = useState<string | null>(null)
   const [userAvatar, setUserAvatar] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -141,6 +140,7 @@ export function Sidebar() {
     } catch {
       /* ignore */
     }
+    document.cookie = "qbos_onboarded=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
     router.push("/login")
     router.refresh()
   }

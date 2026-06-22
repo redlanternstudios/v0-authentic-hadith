@@ -24,11 +24,10 @@ export async function GET() {
     }
     const seed = Math.abs(hash)
 
-    // Get total count of sahih hadiths from Sahihayn (Bukhari + Muslim)
+    // Get total count of sahih hadiths
     const { count } = await supabase
       .from("hadiths")
       .select("id", { count: "exact", head: true })
-      .in("collection", ["sahih-bukhari", "sahih-muslim"])
       .eq("grade", "sahih")
 
     if (!count || count === 0) {
@@ -41,7 +40,6 @@ export async function GET() {
     const { data: hadith, error } = await supabase
       .from("hadiths")
       .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade, reference")
-      .in("collection", ["sahih-bukhari", "sahih-muslim"])
       .eq("grade", "sahih")
       .range(offset, offset)
       .single()
@@ -51,7 +49,6 @@ export async function GET() {
       const { data: fallback } = await supabase
         .from("hadiths")
         .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade, reference")
-        .in("collection", ["sahih-bukhari", "sahih-muslim"])
         .eq("grade", "sahih")
         .limit(1)
         .single()

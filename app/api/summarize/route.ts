@@ -1,5 +1,4 @@
 import { generateText, Output } from "ai"
-import { deepseekChat } from "@/lib/ai/deepseek"
 import { z } from "zod"
 import { createClient } from "@supabase/supabase-js"
 
@@ -51,7 +50,7 @@ export async function POST(req: Request) {
     }
 
     const { output } = await generateText({
-      model: deepseekChat,
+      model: "openai/gpt-4o-mini",
       prompt: `You are a hadith scholar. Analyze this hadith and return JSON.
 
 Hadith: "${text}"
