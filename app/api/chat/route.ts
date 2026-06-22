@@ -1,4 +1,5 @@
 import { streamText, tool, convertToModelMessages, UIMessage } from "ai"
+import { deepseekChat } from "@/lib/ai/deepseek"
 import { z } from "zod"
 import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { checkAIQuota, incrementAIUsage } from "@/lib/quotas/check"
@@ -31,7 +32,7 @@ Critical content safety rules (you MUST follow these):
 - NEVER claim to represent any specific school of thought (madhab) as the only correct interpretation.
 - Stay within the domain of hadith scholarship. Politely decline questions unrelated to Islamic knowledge.
 
-You have access to a database of 31,839 authenticated hadiths from: Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami at-Tirmidhi, Sunan an-Nasai, Sunan Ibn Majah, Muwatta Malik, and Musnad Ahmad.
+You have access to a database of 14,444 authenticated hadiths from the two most authoritative collections: Sahih al-Bukhari and Sahih Muslim (the Sahihayn).
 
 Use the searchHadiths tool to find relevant hadiths before answering questions.`
 
@@ -146,7 +147,7 @@ export async function POST(req: Request) {
     const convertedMessages = await convertToModelMessages(messages)
 
     const result = streamText({
-      model: "openai/gpt-4o-mini",
+      model: deepseekChat,
       system: systemPrompt,
       messages: convertedMessages,
       tools: {
@@ -165,6 +166,7 @@ export async function POST(req: Request) {
                 .select(
                   "id, hadith_number, collection, arabic_text, english_translation, narrator, grade, reference",
                 )
+                .in("collection", ["sahih-bukhari", "sahih-muslim"])
                 .or(
                   `english_translation.ilike.%${query}%,narrator.ilike.%${query}%,arabic_text.ilike.%${query}%`,
                 )
