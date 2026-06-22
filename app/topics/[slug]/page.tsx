@@ -7,6 +7,8 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client"
 import { HadithCardCondensed } from "@/components/collections/hadith-card-condensed"
 import { cn } from "@/lib/utils"
 
+const SAHIHAYN = ["sahih-bukhari", "sahih-muslim"] as const
+
 interface Tag {
   id: string
   slug: string
@@ -45,7 +47,6 @@ export default function CategoryDetailPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Get category
       const { data: cat } = await supabase
         .from("categories")
         .select("id, name_en, name_ar, description, icon")
@@ -58,7 +59,6 @@ export default function CategoryDetailPage() {
       }
       setCategory(cat)
 
-      // Get tags for this category
       const { data: catTags } = await supabase
         .from("tags")
         .select("id, slug, name_en")
@@ -75,7 +75,6 @@ export default function CategoryDetailPage() {
         return
       }
 
-      // Count hadiths per tag via hadith_tag_weights
       const { data: weights } = await supabase
         .from("hadith_tag_weights")
         .select("tag_id, hadith_id")
@@ -95,14 +94,13 @@ export default function CategoryDetailPage() {
       enrichedTags.sort((a, b) => b.hadith_count - a.hadith_count)
       setTags(enrichedTags)
 
-      // Load hadiths from all tags in this category
       const hadithIdArr = [...allHadithIds].slice(0, 50)
       if (hadithIdArr.length > 0) {
         const { data: hadithData } = await supabase
           .from("hadiths")
           .select("id, arabic_text, english_translation, narrator, grade, collection, reference, hadith_number")
+          .in("collection", SAHIHAYN)
           .in("id", hadithIdArr)
-
         setHadiths(hadithData || [])
       }
 
@@ -111,7 +109,6 @@ export default function CategoryDetailPage() {
     fetchData()
   }, [supabase, slug])
 
-  // Filter by specific tag
   useEffect(() => {
     if (!activeTag || !category) return
 
@@ -129,6 +126,7 @@ export default function CategoryDetailPage() {
         const { data: hadithData } = await supabase
           .from("hadiths")
           .select("id, arabic_text, english_translation, narrator, grade, collection, reference, hadith_number")
+          .in("collection", SAHIHAYN)
           .in("id", ids)
         setHadiths(hadithData || [])
       } else {
@@ -139,10 +137,8 @@ export default function CategoryDetailPage() {
     filterByTag()
   }, [activeTag, supabase, category])
 
-  // Reset to all hadiths when clearing tag
   const clearTagFilter = () => {
     setActiveTag(null)
-    // Re-trigger the main fetch by forcing a re-render
     setLoading(true)
     const refetch = async () => {
       const { data: cat } = await supabase
@@ -171,6 +167,7 @@ export default function CategoryDetailPage() {
         const { data: hadithData } = await supabase
           .from("hadiths")
           .select("id, arabic_text, english_translation, narrator, grade, collection, reference, hadith_number")
+          .in("collection", SAHIHAYN)
           .in("id", ids)
         setHadiths(hadithData || [])
       } else {
@@ -229,7 +226,6 @@ export default function CategoryDetailPage() {
           <p className="text-sm text-muted-foreground leading-relaxed">{category.description}</p>
         )}
 
-        {/* Tag Filters */}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             <button
@@ -262,7 +258,6 @@ export default function CategoryDetailPage() {
           </div>
         )}
 
-        {/* Hadith List */}
         {hadiths.length === 0 ? (
           <div className="premium-card rounded-xl p-8 text-center">
             <BookOpen className="w-10 h-10 mx-auto mb-3 text-muted-foreground/40" />
@@ -283,4 +278,4 @@ export default function CategoryDetailPage() {
       </main>
     </div>
   )
-}
+              }
