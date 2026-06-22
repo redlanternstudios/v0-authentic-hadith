@@ -50,7 +50,7 @@ function CollectionsContent() {
         .limit(4)
 
       // Fetch all collections
-      const { data: all } = await supabase.from("collections").select("*").order("name_en", { ascending: true })
+      const { data: all } = await supabase.from("collections").select("*").eq("is_featured", true).order("name_en", { ascending: true })
 
       if (featured) setFeaturedCollections(featured)
       if (all) {
