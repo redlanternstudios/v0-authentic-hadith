@@ -285,7 +285,7 @@ export default function HomePage() {
         const { data: featured } = await supabase2
           .from("collections")
           .select("id, name_en, name_ar, slug, total_hadiths, is_featured, grade_distribution")
-          .eq("is_sahihayn", true)
+          .in("slug", ["sahih-bukhari", "sahih-muslim"])
           .order("total_hadiths", { ascending: false })
           .limit(2)
         if (featured) setFeaturedCollections(featured)
@@ -737,7 +737,7 @@ export default function HomePage() {
                   <ChevronRight className="w-6 h-6 text-secondary" />
                 </div>
                 <span className="text-sm font-semibold text-secondary">View All</span>
-                <span className="text-xs text-muted-foreground mt-0.5">8 collections</span>
+                <span className="text-xs text-muted-foreground mt-0.5">2 collections</span>
               </button>
             </div>
           </section>
