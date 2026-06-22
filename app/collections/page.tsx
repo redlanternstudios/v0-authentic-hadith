@@ -41,16 +41,16 @@ function CollectionsContent() {
 
   useEffect(() => {
     const fetchCollections = async () => {
-      // Fetch featured collections (top 4 by hadith count)
+      // Fetch featured collections (Sahihayn only)
       const { data: featured } = await supabase
         .from("collections")
         .select("*")
-        .eq("is_featured", true)
+        .in("slug", ["sahih-bukhari", "sahih-muslim"])
         .order("total_hadiths", { ascending: false })
-        .limit(4)
+        .limit(2)
 
-      // Fetch all collections
-      const { data: all } = await supabase.from("collections").select("*").order("name_en", { ascending: true })
+      // Fetch all collections (Sahihayn only)
+      const { data: all } = await supabase.from("collections").select("*").in("slug", ["sahih-bukhari", "sahih-muslim"]).order("name_en", { ascending: true })
 
       if (featured) setFeaturedCollections(featured)
       if (all) {

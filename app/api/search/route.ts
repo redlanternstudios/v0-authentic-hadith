@@ -49,6 +49,7 @@ export async function GET(req: Request) {
       .from("hadiths")
       .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
       .in("id", ids)
+      .in("collection", ["sahih-bukhari", "sahih-muslim"])
 
     const enriched = await attachEnrichments(supabase, hadiths || [])
     return Response.json({ results: enriched })
@@ -78,6 +79,7 @@ export async function GET(req: Request) {
       .from("hadiths")
       .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
       .in("id", ids)
+      .in("collection", ["sahih-bukhari", "sahih-muslim"])
 
     // Further filter by text query if provided
     if (query.length >= 2) {
@@ -91,10 +93,11 @@ export async function GET(req: Request) {
     return Response.json({ results: enriched })
   }
 
-  // Standard text search: search hadiths + summary_lines
+  // Standard text search: search hadiths + summary_lines (Sahihayn only)
   const { data: directResults, error } = await supabase
     .from("hadiths")
     .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
+    .in("collection", ["sahih-bukhari", "sahih-muslim"])
     .or(`english_translation.ilike.%${query}%,narrator.ilike.%${query}%,arabic_text.ilike.%${query}%`)
     .limit(20)
 
@@ -123,6 +126,7 @@ export async function GET(req: Request) {
       .from("hadiths")
       .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
       .in("id", extraIds)
+      .in("collection", ["sahih-bukhari", "sahih-muslim"])
 
     if (extras) {
       allResults = [...allResults, ...extras]

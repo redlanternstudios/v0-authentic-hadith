@@ -285,9 +285,9 @@ export default function HomePage() {
         const { data: featured } = await supabase2
           .from("collections")
           .select("id, name_en, name_ar, slug, total_hadiths, is_featured, grade_distribution")
-          .eq("is_featured", true)
+          .eq("is_sahihayn", true)
           .order("total_hadiths", { ascending: false })
-          .limit(4)
+          .limit(2)
         if (featured) setFeaturedCollections(featured)
       } catch (err) {
         // Home fetch error
