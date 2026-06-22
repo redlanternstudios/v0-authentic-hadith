@@ -85,6 +85,7 @@ export async function POST(req: Request) {
             const { data: hadiths } = await supabase
               .from("hadiths")
               .select("english_translation, arabic_text, collection, reference, grade, narrator")
+              .in("collection", ["sahih-bukhari", "sahih-muslim"])
               .in("id", allHadithIds)
               .limit(20)
             if (hadiths) hadithContext = hadiths
