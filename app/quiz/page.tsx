@@ -86,10 +86,8 @@ export default function QuizPage() {
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(10),
-.select("id, arabic_text, english_translation, collection, reference, grade, narrator")
-                                                                .not("narrator", "is", null)
-                                                                .not("english_translation", "is", null)
-                                                                .limit(200).from("learning_paths")
+        supabase
+          .from("learning_paths")
           .select("id, title, slug, color, level")
           .order("sort_order"),
       ])
