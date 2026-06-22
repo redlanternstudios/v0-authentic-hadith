@@ -69,6 +69,7 @@ export default function TagDetailPage() {
         const { data: hadithData } = await supabase
           .from("hadiths")
           .select("id, arabic_text, english_translation, narrator, grade, collection, reference, hadith_number")
+          .in("collection", ["sahih-bukhari", "sahih-muslim"])
           .in("id", hadithIds)
 
         // Get summaries
