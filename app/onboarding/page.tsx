@@ -202,8 +202,8 @@ function OnboardingContent() {
       }
 
       // Set onboarded + safety agreed cookies
-      document.cookie = "qbos_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
-      document.cookie = "qbos_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
+      document.cookie = "ah_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
+      document.cookie = "ah_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
 
       // If the user was redirected from pricing (e.g. after sign-up), send them back there
       if (postOnboardingRedirect) {

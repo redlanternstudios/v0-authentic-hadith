@@ -30,7 +30,6 @@ export function AuthForm() {
     setLoading(true)
     setError(null)
 
-    console.log("[v0] Sign in attempt for:", email)
     const supabase = getSupabaseBrowserClient()
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -38,13 +37,10 @@ export function AuthForm() {
     })
 
     if (error) {
-      console.log("[v0] Sign in error:", error.message)
       setError(error.message)
       setLoading(false)
       return
     }
-
-    console.log("[v0] Sign in successful, user:", data?.user?.id)
     // Sign in successful
     if (data?.user) {
       // Ensure profile exists (create if needed)
@@ -74,8 +70,8 @@ export function AuthForm() {
 
       if (prefs?.onboarded) {
         // User has onboarded - set cookies and go to home
-        document.cookie = "qbos_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
-        document.cookie = "qbos_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
+        document.cookie = "ah_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
+        document.cookie = "ah_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
         router.push(redirectTo || "/home")
       } else {
         // User hasn't onboarded - send to onboarding

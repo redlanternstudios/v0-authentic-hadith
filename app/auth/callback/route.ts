@@ -60,12 +60,12 @@ export async function GET(request: Request) {
 
     if (prefs?.onboarded) {
       const response = NextResponse.redirect(`${origin}/home`)
-      response.cookies.set("qbos_onboarded", "1", {
+      response.cookies.set("ah_onboarded", "1", {
         path: "/",
         maxAge: 31536000,
         sameSite: "lax",
       })
-      response.cookies.set("qbos_safety_agreed", "1", {
+      response.cookies.set("ah_safety_agreed", "1", {
         path: "/",
         maxAge: 31536000,
         sameSite: "lax",

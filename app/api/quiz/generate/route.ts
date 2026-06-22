@@ -1,5 +1,4 @@
 import { generateText, Output } from "ai"
-import { deepseekChat } from "@/lib/ai/deepseek"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 
@@ -98,7 +97,6 @@ export async function POST(req: Request) {
       const { data: hadiths } = await supabase
         .from("hadiths")
         .select("english_translation, arabic_text, collection, reference, grade, narrator")
-        .in("collection", ["sahih-bukhari", "sahih-muslim"])
         .not("narrator", "is", null)
         .not("english_translation", "is", null)
         .limit(100)
@@ -154,7 +152,7 @@ ${hadithContextStr}
 Generate exactly ${count} questions with varying difficulty levels. Focus on testing genuine understanding of the teachings.`
 
     const { output } = await generateText({
-      model: deepseekChat,
+      model: "openai/gpt-4o-mini",
       output: Output.object({ schema: quizQuestionSchema }),
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],

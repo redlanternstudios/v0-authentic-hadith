@@ -46,9 +46,9 @@ export default function LandingPage() {
           <span className="gold-text gold-text-heading">Prophetic Wisdom</span>
         </h1>
         <p className="mt-4 md:mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed text-pretty">
-          Access verified collections of prophetic traditions from the six major hadith
-          compilations, meticulously authenticated and preserved for generations of
-          knowledge seekers.
+          Access 14,444 verified prophetic traditions from Al-Sahihayn — the two most
+          rigorously authenticated collections in Islam, meticulously preserved for
+          generations of knowledge seekers.
         </p>
         <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
@@ -75,9 +75,9 @@ export default function LandingPage() {
           {[
             {
               icon: BookOpen,
-              title: "All 8 Authentic Collections",
+              title: "Al-Sahihayn",
               description:
-                "Browse Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami at-Tirmidhi, Sunan an-Nasai, Sunan Ibn Majah, Muwatta Malik, and Musnad Ahmad.",
+                "Every hadith is from Sahih al-Bukhari or Sahih Muslim — the two most rigorously authenticated collections, graded Sahih by unanimous consensus.",
             },
             {
               icon: Search,
@@ -135,7 +135,7 @@ export default function LandingPage() {
             Free to explore. Pro for depth.
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Browse all 8 collections, read full hadiths, and get 3 AI explanations daily --
+            Browse all 14,444 hadiths from Al-Sahihayn, read full text, and get 3 AI explanations daily --
             completely free. Upgrade when you want deeper study tools.
           </p>
         </div>
@@ -150,7 +150,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1.5">
-            {["All 8 collections", "Full Arabic + English text", "Basic search", "3 AI explanations/day", "40 saved hadiths", "1 quiz/day"].map((f) => (
+            {["All 14,444 hadiths", "Full Arabic + English text", "Basic search", "3 AI explanations/day", "40 saved hadiths", "1 quiz/day"].map((f) => (
               <span key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Check className="w-3 h-3 text-[#1B5E43] dark:text-[#6bb895] shrink-0" />{f}
               </span>
@@ -243,7 +243,7 @@ export default function LandingPage() {
         </div>
 
         <p className="text-center text-sm text-muted-foreground mt-8">
-          Not ready to commit? <Link href="/login" className="gold-text font-medium hover:underline">Start free as an Explorer</Link> -- browse all collections, basic search, and 3 AI explanations daily.
+          Not ready to commit? <Link href="/login" className="gold-text font-medium hover:underline">Start free as an Explorer</Link> -- browse all 14,444 hadiths, basic search, and 3 AI explanations daily.
         </p>
       </section>
 

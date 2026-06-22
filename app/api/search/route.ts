@@ -91,11 +91,10 @@ export async function GET(req: Request) {
     return Response.json({ results: enriched })
   }
 
-  // Standard text search: search hadiths + summary_lines (Sahihayn only)
+  // Standard text search: search hadiths + summary_lines
   const { data: directResults, error } = await supabase
     .from("hadiths")
     .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
-    .in("collection", ["sahih-bukhari", "sahih-muslim"])
     .or(`english_translation.ilike.%${query}%,narrator.ilike.%${query}%,arabic_text.ilike.%${query}%`)
     .limit(20)
 
