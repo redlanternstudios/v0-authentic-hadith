@@ -1,12 +1,12 @@
-"use client"
+"use client" 
 
 import { useEffect, useState } from "react"
 import { useRouter, useParams } from "next/navigation"
-import { ChevronLeft, Hash, Loader2, BookOpen } from "lucide-react"
-import { getSupabaseBrowserClient } from "@/lib/supabase/client"
-import { HadithCardCondensed } from "@/components/collections/hadith-card-condensed"
-import { cn } from "@/lib/utils"
-
+.in("id", ids)
+          setHadiths(hadithData || [])import { HadithCardCondensed } from "@/components/collections/hadith-card-condensed"
+.in("collection", ["sahih-bukhari", "sahih-muslim"])
+          .in("id", ids)
+          setHadiths(hadithData || []).in("id", hadithIdArr)
 interface Tag {
   id: string
   slug: string
