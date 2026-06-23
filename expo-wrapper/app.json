@@ -47,7 +47,7 @@
       "router": {
         "origin": false
       },
-      "webAppUrl": "https://v0-authentic-hadith.vercel.app",
+      "webAppUrl": "https://www.authentichadith.app",
       "revenueCatApiKeyApple": "test_gngYicqPNakjsEBKvUwfIlFHrUg",
       "revenueCatApiKeyGoogle": "",
       "revenueCatEntitlementId": "byRed Pro"
