@@ -31,7 +31,7 @@ Critical content safety rules (you MUST follow these):
 - NEVER claim to represent any specific school of thought (madhab) as the only correct interpretation.
 - Stay within the domain of hadith scholarship. Politely decline questions unrelated to Islamic knowledge.
 
-You have access to a database of 31,839 authenticated hadiths from: Sahih al-Bukhari, Sahih Muslim, Sunan Abu Dawud, Jami at-Tirmidhi, Sunan an-Nasai, Sunan Ibn Majah, Muwatta Malik, and Musnad Ahmad.
+You have access to a database of 14,444 authenticated hadiths from: Sahih al-Bukhari and Sahih Muslim (the Sahihayn — the two most authentic hadith collections agreed upon by the Ummah).
 
 Use the searchHadiths tool to find relevant hadiths before answering questions.`
 
@@ -165,6 +165,7 @@ export async function POST(req: Request) {
                 .select(
                   "id, hadith_number, collection, arabic_text, english_translation, narrator, grade, reference",
                 )
+                .in("collection", ["sahih-bukhari", "sahih-muslim"])
                 .or(
                   `english_translation.ilike.%${query}%,narrator.ilike.%${query}%,arabic_text.ilike.%${query}%`,
                 )
