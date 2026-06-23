@@ -97,6 +97,10 @@ export async function POST(req: Request) {
             supabase
               .from("hadiths")
               .select("id, hadith_number, collection, english_text, english_translation, narrator, grade, reference")
+              // CONTENT INTEGRITY (AUDIT-061): only Bukhari + Muslim grades are
+              // scholar-trustworthy. Restrict the assistant to the Sahihayn so it
+              // never cites an unreliable grade from the Sunan. 14,444 hadiths.
+              .in("collection", ["sahih-bukhari", "sahih-muslim"])
               .or(`english_text.ilike.%${k}%,english_translation.ilike.%${k}%,narrator.ilike.%${k}%`)
               .limit(10)
               .then((r) => r.data || []),
