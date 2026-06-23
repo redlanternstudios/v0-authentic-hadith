@@ -83,42 +83,49 @@ export async function POST(req: Request) {
     const lastUser = [...messages].reverse().find((m: any) => m?.role === "user")?.content ?? ""
     const keywords = extractKeywords(String(lastUser))
 
-    // RAG grounding — best-effort retrieval, then JS relevance-rank by keyword hits.
+    // RAG grounding. Each keyword gets its OWN query + quota so a common word
+    // (e.g. "others") can't crowd out the rare topic word (e.g. "kindness").
+    // Then rank by specificity: longer keywords weigh more, so on-topic
+    // narrations beat rows that only matched a generic stray word.
     let retrieved = ""
     try {
       if (keywords.length) {
         const supabase = await getSupabaseServerClient()
-        const orFilter = keywords
-          .map((k) => `english_text.ilike.%${k}%,english_translation.ilike.%${k}%,narrator.ilike.%${k}%`)
-          .join(",")
-        const { data, error } = await supabase
-          .from("hadiths")
-          .select("hadith_number, collection, english_text, english_translation, narrator, grade, reference")
-          .or(orFilter)
-          .limit(40)
 
-        if (!error && data && data.length) {
-          // Rank by how many distinct keywords actually appear in the hadith text,
-          // so on-topic narrations beat rows that only matched a stray word.
-          const scored = data
-            .map((h: any) => {
-              const text = cleanText(h.english_text || h.english_translation)
-              const hay = `${text} ${h.narrator || ""}`.toLowerCase()
-              const score = keywords.reduce((n, k) => (hay.includes(k) ? n + 1 : n), 0)
-              return { h, text, score }
+        const perKeyword = await Promise.all(
+          keywords.map((k) =>
+            supabase
+              .from("hadiths")
+              .select("id, hadith_number, collection, english_text, english_translation, narrator, grade, reference")
+              .or(`english_text.ilike.%${k}%,english_translation.ilike.%${k}%,narrator.ilike.%${k}%`)
+              .limit(10)
+              .then((r) => r.data || []),
+          ),
+        )
+
+        // Merge + dedupe by hadith id.
+        const byId = new Map<number, any>()
+        for (const rows of perKeyword) for (const h of rows) if (!byId.has(h.id)) byId.set(h.id, h)
+
+        const scored = Array.from(byId.values())
+          .map((h: any) => {
+            const text = cleanText(h.english_text || h.english_translation)
+            const hay = `${text} ${h.narrator || ""}`.toLowerCase()
+            // Specificity-weighted score: a longer keyword present is worth more.
+            const score = keywords.reduce((n, k) => (hay.includes(k) ? n + k.length : n), 0)
+            return { h, text, score }
+          })
+          .filter((r) => r.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5)
+
+        if (scored.length) {
+          retrieved = scored
+            .map(({ h, text }, i) => {
+              const grade = h.grade ? `, ${h.grade}` : ""
+              return `${i + 1}. [${h.collection} #${h.hadith_number}${grade}] Narrated ${h.narrator || "—"}: ${text}`
             })
-            .filter((r) => r.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 5)
-
-          if (scored.length) {
-            retrieved = scored
-              .map(({ h, text }, i) => {
-                const grade = h.grade ? `, ${h.grade}` : ""
-                return `${i + 1}. [${h.collection} #${h.hadith_number}${grade}] Narrated ${h.narrator || "—"}: ${text}`
-              })
-              .join("\n\n")
-          }
+            .join("\n\n")
         }
       }
     } catch (toolError) {
