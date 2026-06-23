@@ -48,6 +48,7 @@ export async function GET(req: Request) {
     const { data: hadiths } = await supabase
       .from("hadiths")
       .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
+      .in("collection", ["sahih-bukhari", "sahih-muslim"])
       .in("id", ids)
 
     const enriched = await attachEnrichments(supabase, hadiths || [])
@@ -77,6 +78,7 @@ export async function GET(req: Request) {
     let hadithQuery = supabase
       .from("hadiths")
       .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
+      .in("collection", ["sahih-bukhari", "sahih-muslim"])
       .in("id", ids)
 
     // Further filter by text query if provided
@@ -91,10 +93,11 @@ export async function GET(req: Request) {
     return Response.json({ results: enriched })
   }
 
-  // Standard text search: search hadiths + summary_lines
+  // Standard text search: search hadiths + summary_lines (Sahihayn only)
   const { data: directResults, error } = await supabase
     .from("hadiths")
     .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
+    .in("collection", ["sahih-bukhari", "sahih-muslim"])
     .or(`english_translation.ilike.%${query}%,narrator.ilike.%${query}%,arabic_text.ilike.%${query}%`)
     .limit(20)
 
@@ -117,11 +120,12 @@ export async function GET(req: Request) {
 
   let allResults = directResults || []
 
-  // Fetch additional hadiths found via summary search
+  // Fetch additional hadiths found via summary search (Sahihayn only)
   if (extraIds.length > 0) {
     const { data: extras } = await supabase
       .from("hadiths")
       .select("id, hadith_number, collection, book_number, arabic_text, english_translation, narrator, grade")
+      .in("collection", ["sahih-bukhari", "sahih-muslim"])
       .in("id", extraIds)
 
     if (extras) {
