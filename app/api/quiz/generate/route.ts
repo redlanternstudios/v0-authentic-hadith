@@ -98,6 +98,7 @@ export async function POST(req: Request) {
       const { data: hadiths } = await supabase
         .from("hadiths")
         .select("english_translation, arabic_text, collection, reference, grade, narrator")
+        .in("collection", ["sahih-bukhari", "sahih-muslim"])
         .not("narrator", "is", null)
         .not("english_translation", "is", null)
         .limit(100)
