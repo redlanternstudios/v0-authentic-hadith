@@ -4,8 +4,13 @@ import { getSupabaseServerClient } from "@/lib/supabase/server"
 // Mobile chat endpoint consumed by the native app (lib/api/groq.ts).
 // Contract: POST { messages: [{ role, content }] } -> { response: string }.
 // Non-streaming on purpose so the existing app build keeps working with no rebuild.
-// Brain: gpt-4o-mini (chosen over Groq for concurrency headroom) + deterministic
-// RAG grounding over the hadith database + server-side safety guardrails.
+// Brain: gpt-4o-mini (chosen over Groq for concurrency headroom) + STRICT RAG
+// grounding over the hadith database + server-side safety guardrails.
+//
+// STRICT GROUNDING (provenance is non-negotiable for an authentic-hadith app):
+// the model may ONLY cite hadiths that this route actually retrieved from the
+// hadiths table. It must NEVER state a hadith number, collection, narrator, or
+// grade from its own training. If nothing relevant is retrieved, it says so.
 
 export const maxDuration = 30
 
@@ -13,15 +18,16 @@ const SYSTEM_PROMPT = `You are the Authentic Hadith assistant, a knowledgeable a
 
 Your role:
 - Help users understand the meaning, context, and chain of narration (isnad) of hadiths.
-- Provide scholarly interpretations and note authenticity grades (Sahih, Hasan).
-- Answer questions about Islamic teachings grounded in authentic narrations.
+- Explain authenticity grades (Sahih, Hasan) when they are provided to you.
+- Answer questions about Islamic teachings grounded ONLY in the narrations provided to you below.
 
-Grounding rules:
-- Relevant narrations from the app's database may be provided below under "RETRIEVED HADITHS". When present, base your answer on them and cite the collection, number, narrator, and grade.
-- Prefer hadiths graded Sahih or Hasan. If a retrieved narration is weak, do not present it as authoritative.
-- If no hadiths are retrieved, you may give general guidance grounded in well-known authentic teachings, and suggest the user search the app for specific narrations. NEVER fabricate a hadith, a chain of narration, a grade, or a citation.
+STRICT GROUNDING RULES (you MUST follow these — they are the most important rules):
+- You may ONLY cite, quote, reference, or attribute a hadith that appears in the "RETRIEVED HADITHS" block below.
+- NEVER state a hadith number, collection name, narrator, chain, or authenticity grade that is not present in that block. Do not recall hadiths from your own training or memory.
+- If the retrieved hadiths do not answer the user's question, or none are provided, say clearly: you could not find a specific authenticated narration for that in the collection, and suggest they use the app's Search feature. You may then offer brief GENERAL thematic guidance, but you MUST NOT invent, recall, or cite any specific hadith, number, chain, or grade from outside the retrieved set.
+- When you do cite a retrieved hadith, include its collection, number, narrator, and grade exactly as given.
 
-Critical content safety rules (you MUST follow these):
+Critical content safety rules (you MUST also follow these):
 - You are NOT a mufti. NEVER issue fatwas or definitive religious rulings. Say "scholars have said..." or "according to [scholar/school]..." and recommend the user consult a qualified local scholar for personal rulings.
 - NEVER provide medical, legal, financial, or psychological advice. Direct users to qualified professionals.
 - NEVER encourage self-harm, violence, extremism, or hatred toward any group. If a user expresses distress, gently encourage them to seek help from a qualified counselor or a crisis helpline.
@@ -31,15 +37,35 @@ Critical content safety rules (you MUST follow these):
 
 Keep answers clear and concise (2-4 paragraphs). Use accessible language while staying scholarly and accurate.`
 
+// Generic/meta words that carry no hadith-topic signal. Stripped before search so
+// the retrieval keys on real content (e.g. "kindness"), not query filler.
 const STOPWORDS = new Set(
-  "the a an of to in on and or for is are was were be been with about what when how why who which that this these those tell me give show explain please can you your i my our we us hadith hadiths narration narrations regarding say said says according".split(
-    /\s+/,
-  ),
+  (
+    "the a an of to in on at by it its is are am was were be been being and or but for nor so yet with about into from over under " +
+    "what when how why who whom which that this these those there here then than as if not no yes do does did done has have had " +
+    "tell me give show explain please can could would should will shall may might must want need know find get see read share " +
+    "you your yours i my me mine we us our ours they them their he she his her hadith hadith's hadiths narration narrations " +
+    "authentic authenticity source sources reference references grade graded grading sahih hasan daif weak chain isnad collection " +
+    "regarding related topic example examples something anything everything please kindly thanks thank also more most some any " +
+    "say said says according mention mentioned talk speak speaks about list quote cite citing"
+  ).split(/\s+/),
 )
 
 function extractKeywords(text: string): string[] {
   const words = (text.toLowerCase().match(/[a-z]{3,}/g) || []).filter((w) => !STOPWORDS.has(w))
-  return Array.from(new Set(words)).slice(0, 5)
+  return Array.from(new Set(words)).slice(0, 6)
+}
+
+function cleanText(raw: unknown): string {
+  let text = typeof raw === "string" ? raw : ""
+  if (text.startsWith("{") && text.includes('"text"')) {
+    try {
+      text = JSON.parse(text).text || text
+    } catch {
+      // keep original
+    }
+  }
+  return text
 }
 
 export async function POST(req: Request) {
@@ -57,35 +83,42 @@ export async function POST(req: Request) {
     const lastUser = [...messages].reverse().find((m: any) => m?.role === "user")?.content ?? ""
     const keywords = extractKeywords(String(lastUser))
 
-    // RAG grounding — best-effort, never blocks the answer.
+    // RAG grounding — best-effort retrieval, then JS relevance-rank by keyword hits.
     let retrieved = ""
     try {
       if (keywords.length) {
         const supabase = await getSupabaseServerClient()
         const orFilter = keywords
-          .map((k) => `english_translation.ilike.%${k}%,narrator.ilike.%${k}%`)
+          .map((k) => `english_text.ilike.%${k}%,english_translation.ilike.%${k}%,narrator.ilike.%${k}%`)
           .join(",")
         const { data, error } = await supabase
           .from("hadiths")
-          .select("hadith_number, collection, english_translation, narrator, grade, reference")
+          .select("hadith_number, collection, english_text, english_translation, narrator, grade, reference")
           .or(orFilter)
-          .limit(5)
+          .limit(40)
 
         if (!error && data && data.length) {
-          retrieved = data
-            .map((h: any, i: number) => {
-              let text = h.english_translation || ""
-              if (typeof text === "string" && text.startsWith("{") && text.includes('"text"')) {
-                try {
-                  text = JSON.parse(text).text || text
-                } catch {
-                  // keep original
-                }
-              }
-              const grade = h.grade ? `, ${h.grade}` : ""
-              return `${i + 1}. [${h.collection} #${h.hadith_number}${grade}] Narrated ${h.narrator || "—"}: ${text}`
+          // Rank by how many distinct keywords actually appear in the hadith text,
+          // so on-topic narrations beat rows that only matched a stray word.
+          const scored = data
+            .map((h: any) => {
+              const text = cleanText(h.english_text || h.english_translation)
+              const hay = `${text} ${h.narrator || ""}`.toLowerCase()
+              const score = keywords.reduce((n, k) => (hay.includes(k) ? n + 1 : n), 0)
+              return { h, text, score }
             })
-            .join("\n\n")
+            .filter((r) => r.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5)
+
+          if (scored.length) {
+            retrieved = scored
+              .map(({ h, text }, i) => {
+                const grade = h.grade ? `, ${h.grade}` : ""
+                return `${i + 1}. [${h.collection} #${h.hadith_number}${grade}] Narrated ${h.narrator || "—"}: ${text}`
+              })
+              .join("\n\n")
+          }
         }
       }
     } catch (toolError) {
@@ -93,15 +126,15 @@ export async function POST(req: Request) {
     }
 
     const system = retrieved
-      ? `${SYSTEM_PROMPT}\n\nRETRIEVED HADITHS:\n${retrieved}`
-      : `${SYSTEM_PROMPT}\n\nRETRIEVED HADITHS: (none matched this query)`
+      ? `${SYSTEM_PROMPT}\n\nRETRIEVED HADITHS (the ONLY hadiths you may cite):\n${retrieved}`
+      : `${SYSTEM_PROMPT}\n\nRETRIEVED HADITHS: (none matched — do NOT cite any specific hadith; tell the user you could not find a specific narration and suggest the Search feature.)`
 
     const { text } = await generateText({
       model: "openai/gpt-4o-mini",
       system,
       messages,
       maxOutputTokens: 1024,
-      temperature: 0.6,
+      temperature: 0.4,
       maxRetries: 2,
     })
 
