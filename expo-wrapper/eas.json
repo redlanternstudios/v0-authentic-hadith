@@ -24,10 +24,12 @@
   "submit": {
     "production": {
       "ios": {
-        "ascAppId": "6764673665",
-        "appleTeamId": "LXL3ZMHHK6"
+        "appleId": "",
+        "ascAppId": "",
+        "appleTeamId": ""
       },
       "android": {
+        "serviceAccountKeyPath": "",
         "track": "production"
       }
     }
