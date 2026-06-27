@@ -60,12 +60,12 @@ Paul has instant access to:
 ### After Paul Signs Up
 
 1. **Check if account was created:**
-   ```sql
+   \`\`\`sql
    SELECT * FROM auth.users WHERE email = 'paul.semeah@siemens.com';
-   ```
+   \`\`\`
 
 2. **Verify lifetime premium was granted:**
-   ```sql
+   \`\`\`sql
    SELECT 
      name,
      subscription_tier,
@@ -73,7 +73,7 @@ Paul has instant access to:
      subscription_expires_at
    FROM profiles
    WHERE user_id = (SELECT id FROM auth.users WHERE email = 'paul.semeah@siemens.com');
-   ```
+   \`\`\`
 
 3. **Expected Results:**
    - `subscription_tier`: `'lifetime'`
@@ -81,10 +81,10 @@ Paul has instant access to:
    - `subscription_expires_at`: `'2099-12-31'`
 
 ### Run the Full Verification Script
-```bash
+\`\`\`bash
 # From the project root, execute:
 # The verification script is at: /scripts/verify-paul-lifetime.sql
-```
+\`\`\`
 
 ---
 
@@ -103,7 +103,7 @@ Paul has instant access to:
 ### Adding More VIP Users
 To grant lifetime premium to additional users, update the VIP email list in the trigger function:
 
-```sql
+\`\`\`sql
 -- Update the email whitelist
 CREATE OR REPLACE FUNCTION public.auto_grant_lifetime_for_vip_emails()
 RETURNS TRIGGER AS $$
@@ -120,7 +120,7 @@ BEGIN
      ) 
   THEN
     -- Grant lifetime premium...
-```
+\`\`\`
 
 ---
 
@@ -133,14 +133,14 @@ BEGIN
 
 ### Manual Override (If Needed)
 If the trigger fails for any reason, run:
-```sql
+\`\`\`sql
 UPDATE profiles
 SET 
   subscription_tier = 'lifetime',
   subscription_status = 'active',
   subscription_expires_at = '2099-12-31'::timestamp with time zone
 WHERE user_id = (SELECT id FROM auth.users WHERE email = 'paul.semeah@siemens.com');
-```
+\`\`\`
 
 ---
 
