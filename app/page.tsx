@@ -39,7 +39,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left: Text */}
             <div className="text-white">
-              <p className="text-sm uppercase tracking-widest text-[#b8860b] font-semibold mb-6">64,464 Authenticated Hadiths</p>
+              <p className="text-sm uppercase tracking-widest text-[#b8860b] font-semibold mb-6">14,444 Authenticated Hadiths</p>
               <h1 className="font-serif text-5xl md:text-7xl leading-tight mb-8 text-white">
                 The Sunnah, <span className="text-[#b8860b]">Authenticated</span>
               </h1>
@@ -66,7 +66,7 @@ export default function LandingPage() {
               </div>
 
               <p className="text-xs text-gray-400 font-medium">
-                Sahih Bukhari · Sahih Muslim · Abu Dawud · Tirmidhi · Ibn Majah · Nasai
+                Sahih Bukhari · Sahih Muslim
               </p>
             </div>
 
@@ -85,7 +85,7 @@ export default function LandingPage() {
                     {/* Header */}
                     <div className="bg-gradient-to-r from-[#0d2b1e] to-[#1a3a2d] px-4 py-3 border-b-2 border-[#b8860b]">
                       <p className="text-[#b8860b] text-xs font-bold text-center">BROWSE BY TOPIC</p>
-                      <p className="text-gray-400 text-xs text-center mt-1">64,464 tagged hadiths · 20 categories</p>
+                      <p className="text-gray-400 text-xs text-center mt-1">14,444 tagged hadiths · 20 categories</p>
                     </div>
 
                     {/* Categories */}
@@ -183,7 +183,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
-              { icon: "📚", number: "64,464", label: "Hadiths", desc: "6 major collections" },
+              { icon: "📚", number: "14,444", label: "Hadiths", desc: "Sahih Bukhari & Sahih Muslim" },
               { icon: "🗂", number: "20", label: "Topics", desc: "Every domain of Islamic life" },
               { icon: "🌙", number: "365", label: "Sunnah", desc: "Daily practices of the Prophet ﷺ" },
               { icon: "🤖", number: "AI", label: "HadithChat", desc: "Grounded in authentic narrations" },
@@ -208,7 +208,7 @@ export default function LandingPage() {
               Every topic.<br /><span className="text-[#b8860b]">Every hadith.</span><br />In one place.
             </h2>
             <p className="text-base text-gray-700 mb-6 leading-relaxed">
-              64,464 hadiths tagged and organized across 20 categories — from Salah & Prayer to Family & Marriage to Business & Trade. Each with Arabic text, English translation, scholarly grading, and complete narrator chain.
+              14,444 hadiths tagged and organized across 20 categories — from Salah & Prayer to Family & Marriage to Business & Trade. Each with Arabic text, English translation, scholarly grading, and complete narrator chain.
             </p>
             <Link href="/login" className="inline-flex items-center gap-2 text-[#0d2b1e] font-semibold hover:text-[#2d5a3d] transition-colors">
               Explore all categories <span>→</span>
@@ -315,7 +315,7 @@ export default function LandingPage() {
               Ask anything.<br /><span className="text-[#b8860b]">Answered from authentic sources.</span>
             </h2>
             <p className="text-base text-gray-300 mb-8 leading-relaxed">
-              Powered by AI grounded in the 64,464 authenticated hadiths. Ask about Islamic practice, ethics, history — every answer is traced back to the original hadith.
+              Powered by AI grounded in the 14,444 authenticated hadiths from Sahih Bukhari and Sahih Muslim. Ask about Islamic practice, ethics, history — every answer is traced back to the original hadith.
             </p>
             <div className="space-y-4 mb-8">
               <p className="text-sm text-gray-300">Example questions:</p>
