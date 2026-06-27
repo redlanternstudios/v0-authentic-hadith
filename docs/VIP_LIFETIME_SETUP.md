@@ -26,7 +26,7 @@ A PostgreSQL trigger `auto_grant_lifetime_on_profile_insert` has been created th
 ## Testing & Confirmation
 
 ### To Verify Setup:
-```sql
+\`\`\`sql
 -- Check if trigger exists
 SELECT trigger_name FROM information_schema.triggers 
 WHERE trigger_name = 'auto_grant_lifetime_on_profile_insert';
@@ -42,7 +42,7 @@ SELECT
 FROM profiles p
 JOIN auth.users au ON au.id = p.user_id
 WHERE au.email = 'paul.semeah@siemens.com';
-```
+\`\`\`
 
 Expected result:
 - `subscription_tier`: `'lifetime'`
@@ -55,14 +55,14 @@ To add additional users to the VIP lifetime list:
 
 1. Edit the SQL function in `/supabase/migrations/` (create new migration)
 2. Update the email list in the condition:
-```sql
+\`\`\`sql
 WHERE id = NEW.user_id 
 AND email IN ('paul.semeah@siemens.com', 'other@email.com')
-```
+\`\`\`
 3. Run the migration
 
 Or simply modify the existing trigger:
-```sql
+\`\`\`sql
 -- Update the email list
 CREATE OR REPLACE FUNCTION public.auto_grant_lifetime_for_vip_emails()
 RETURNS TRIGGER AS $$
@@ -75,7 +75,7 @@ BEGIN
      ) 
   THEN
     -- ... rest of function
-```
+\`\`\`
 
 ## Date Expiry
 - Expiry is set to **2099-12-31** to effectively provide lifetime access
