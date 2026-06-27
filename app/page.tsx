@@ -1,282 +1,426 @@
+'use client'
+
 import Image from "next/image"
 import Link from "next/link"
-import { BookOpen, Search, Shield, MessageCircle, Star, Heart, Crown, Infinity, Check, Share2, Users, Copy } from "lucide-react"
-import { PRODUCTS } from "@/lib/products"
-import { ShareBanner } from "@/components/share-banner"
+import { BookOpen, Zap, Moon, MessageCircle, Volume2, Bookmark, Share2, Apple, Smartphone } from "lucide-react"
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen marble-bg">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 max-w-6xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="relative w-8 h-8 md:w-10 md:h-10 shrink-0">
-            <Image
-              src="/images/gemini-generated-image-xw5svjxw5svjxw5s.jpeg"
-              alt="Authentic Hadith Logo"
-              fill
-              className="object-contain rounded-full"
-              priority
-            />
+    <div className="min-h-screen bg-[#f5f0e8]">
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-85 transition">
+            <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={48} height={48} className="w-10 h-10 md:w-12 md:h-12 object-contain" priority />
+            <span className="hidden sm:inline text-sm md:text-base font-semibold text-[#0d2b1e]">Authentic Hadith</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="text-sm font-medium text-[#0d2b1e] hover:text-[#2d5a3d] transition-colors">
+              Sign In
+            </Link>
+            <Link href="/login" className="px-4 py-2 bg-[#0d2b1e] text-white text-sm font-medium rounded-lg hover:bg-[#0a1f15] transition-colors">
+              Get Started
+            </Link>
           </div>
-          <span className="text-sm md:text-lg font-bold gold-text tracking-[0.08em] uppercase">
-            Authentic Hadith
-          </span>
-        </div>
-        <div className="flex items-center gap-2 md:gap-3">
-          <Link
-            href="/login"
-            className="px-3 py-2 text-xs md:text-sm font-medium text-foreground hover:text-secondary transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/login"
-            className="px-3 md:px-5 py-2 gold-button rounded-lg text-xs md:text-sm whitespace-nowrap"
-          >
-            Get Started
-          </Link>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="px-4 md:px-6 pt-10 md:pt-16 pb-12 md:pb-20 max-w-4xl mx-auto text-center">
-        <h1 className="text-3xl md:text-5xl font-bold text-foreground leading-tight text-balance">
-          Your Journey to{" "}
-          <span className="gold-text gold-text-heading">Prophetic Wisdom</span>
-        </h1>
-        <p className="mt-4 md:mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed text-pretty">
-          Access 14,444 verified prophetic traditions from Al-Sahihayn — the two most
-          rigorously authenticated collections in Islam, meticulously preserved for
-          generations of knowledge seekers.
-        </p>
-        <div className="mt-6 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href="/login"
-            className="w-full sm:w-auto px-8 py-3 gold-button rounded-lg text-base text-center"
-          >
-            Start Learning Free
-          </Link>
-          <Link
-            href="/pricing"
-            className="w-full sm:w-auto px-8 py-3 emerald-button rounded-lg text-base text-center"
-          >
-            View Premium Plans
-          </Link>
+      {/* SECTION 1 — HERO */}
+      <section className="relative bg-[#0d2b1e] px-6 py-32 md:py-48 overflow-hidden">
+        {/* Arabic watermark background */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
+          <div className="text-9xl md:text-[12rem] font-serif text-[#b8860b] text-center leading-none" style={{ direction: 'rtl' }}>
+            بِسْمِ اللَّهِ
+          </div>
         </div>
-      </section>
 
-      {/* Features Grid */}
-      <section className="px-4 md:px-6 py-10 md:py-16 max-w-5xl mx-auto">
-        <h2 className="text-xl md:text-2xl font-bold text-center text-foreground mb-8 md:mb-12">
-          Everything You Need to Study Hadith
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {[
-            {
-              icon: BookOpen,
-              title: "Al-Sahihayn",
-              description:
-                "Every hadith is from Sahih al-Bukhari or Sahih Muslim — the two most rigorously authenticated collections, graded Sahih by unanimous consensus.",
-            },
-            {
-              icon: Search,
-              title: "Advanced Search",
-              description:
-                "Search across all collections by keyword, narrator, topic, or hadith number with instant results.",
-            },
-            {
-              icon: Shield,
-              title: "Authenticity Grading",
-              description:
-                "Every hadith includes its authentication grade -- Sahih, Hasan, or Da'if -- from trusted scholars.",
-            },
-            {
-              icon: MessageCircle,
-              title: "AI-Powered Assistant",
-              description:
-                "Ask questions about hadith context, meaning, and application with our Islamic knowledge assistant.",
-            },
-            {
-              icon: Star,
-              title: "Daily Hadith",
-              description:
-                "Receive a curated hadith each day to build consistent engagement with prophetic teachings.",
-            },
-            {
-              icon: Heart,
-              title: "Save & Bookmark",
-              description:
-                "Build your personal collection of favorite hadith for quick reference and memorization.",
-            },
-          ].map((feature) => (
-            <div
-              key={feature.title}
-              className="premium-card rounded-xl p-6"
-            >
-              <div className="w-10 h-10 rounded-lg gold-icon-bg flex items-center justify-center mb-4">
-                <feature.icon className="w-5 h-5 text-[#C5A059]" />
+        {/* Content */}
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left: Text */}
+            <div className="text-white">
+              <p className="text-sm uppercase tracking-widest text-[#b8860b] font-semibold mb-6">14,444 Authenticated Hadiths</p>
+              <h1 className="font-serif text-5xl md:text-7xl leading-tight mb-8 text-white">
+                The Sunnah, <span className="text-[#b8860b]">Authenticated</span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-lg">
+                Browse, search, and understand authentic hadith — with Arabic text, scholarly grading, AI-powered explanation, and stories of the Prophets and Companions.
+              </p>
+
+              {/* App Store Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <Link href="/login" className="px-6 py-4 bg-white text-[#0d2b1e] rounded-xl font-semibold hover:bg-gray-100 transition-all flex items-center gap-3 justify-center">
+                  <Apple className="w-5 h-5" />
+                  <div>
+                    <div className="text-xs text-gray-600">Download on</div>
+                    <div>App Store</div>
+                  </div>
+                </Link>
+                <Link href="/login" className="px-6 py-4 bg-white text-[#0d2b1e] rounded-xl font-semibold hover:bg-gray-100 transition-all flex items-center gap-3 justify-center">
+                  <Smartphone className="w-5 h-5" />
+                  <div>
+                    <div className="text-xs text-gray-600">Get it on</div>
+                    <div>Google Play</div>
+                  </div>
+                </Link>
               </div>
-              <h3 className="font-semibold text-foreground mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {feature.description}
+
+              <p className="text-xs text-gray-400 font-medium">
+                Sahih Bukhari · Sahih Muslim
               </p>
             </div>
-          ))}
+
+            {/* Right: Two Phone Mockups */}
+            <div className="relative h-96 md:h-[600px] flex items-center justify-center perspective">
+              {/* Left phone (tilted) */}
+              <div className="absolute -left-12 md:-left-20 top-0 transform -rotate-12 transition-transform hover:rotate-0">
+                <div className="relative w-64 md:w-80 h-auto bg-black rounded-[3rem] p-3 shadow-2xl border-[10px] border-gray-900">
+                  <div className="w-full bg-[#0d2b1e] rounded-[2.5rem] overflow-hidden flex flex-col h-[500px]">
+                    {/* Status bar */}
+                    <div className="bg-[#0a1f15] px-4 py-2 text-white text-xs flex justify-between items-center border-b border-[#2d5a3d]">
+                      <span>9:41</span>
+                      <span>●●●●●</span>
+                    </div>
+
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-[#0d2b1e] to-[#1a3a2d] px-4 py-3 border-b-2 border-[#b8860b]">
+                      <p className="text-[#b8860b] text-xs font-bold text-center">BROWSE BY TOPIC</p>
+                      <p className="text-gray-400 text-xs text-center mt-1">14,444 tagged hadiths · 20 categories</p>
+                    </div>
+
+                    {/* Categories */}
+                    <div className="px-4 py-3 overflow-y-auto flex-1 space-y-2">
+                      {[
+                        { icon: "🕌", name: "Salah & Prayer", ar: "الصلاة", count: "5787" },
+                        { icon: "🌙", name: "Fasting & Ramadan", ar: "الصيام", count: "1383" },
+                        { icon: "💛", name: "Zakat & Charity", ar: "الزكاة", count: "1253" },
+                        { icon: "🕋", name: "Hajj & Umrah", ar: "الحج", count: "2074" },
+                        { icon: "♡", name: "Character & Manners", ar: "الأخلاق", count: "1727" },
+                        { icon: "⭐", name: "Iman & Aqeedah", ar: "الإيمان", count: "2864" },
+                      ].map((cat, idx) => (
+                        <div key={idx} className="flex items-center gap-2 p-2 rounded hover:bg-[#2d5a3d]/40 cursor-pointer transition">
+                          <span className="text-lg">{cat.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white text-xs font-semibold truncate">{cat.name}</p>
+                            <p className="text-gray-400 text-xs">{cat.ar}</p>
+                          </div>
+                          <p className="text-[#b8860b] text-xs font-bold whitespace-nowrap">{cat.count}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Bottom nav */}
+                    <div className="border-t border-[#2d5a3d] px-4 py-2 flex justify-around text-center">
+                      <div className="text-[#b8860b] text-xs">🏠 Home</div>
+                      <div className="text-gray-400 text-xs">🗂 Topics</div>
+                      <div className="text-gray-400 text-xs">💬 Chat</div>
+                      <div className="text-gray-400 text-xs">📍 Saved</div>
+                    </div>
+                  </div>
+
+                  {/* Notch */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-3xl"></div>
+                </div>
+              </div>
+
+              {/* Right phone (straight) */}
+              <div className="absolute right-0 md:right-auto md:left-1/3 top-8 md:top-0 transform md:translate-x-0 transition-transform hover:scale-105">
+                <div className="relative w-64 md:w-80 h-auto bg-black rounded-[3rem] p-3 shadow-2xl border-[10px] border-gray-900">
+                  <div className="w-full bg-[#0d2b1e] rounded-[2.5rem] overflow-hidden flex flex-col h-[500px]">
+                    {/* Status bar */}
+                    <div className="bg-[#0a1f15] px-4 py-2 text-white text-xs flex justify-between items-center border-b border-[#2d5a3d]">
+                      <span>9:41</span>
+                      <span>●●●●●</span>
+                    </div>
+
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-[#0d2b1e] to-[#1a3a2d] px-4 py-3 border-b-2 border-[#b8860b]">
+                      <p className="text-[#b8860b] text-xs font-bold text-center">✦ HADITH OF THE DAY ✦</p>
+                    </div>
+
+                    {/* Badges */}
+                    <div className="px-4 pt-3 pb-2 flex gap-2 items-center flex-wrap">
+                      <span className="px-2 py-1 bg-[#2d5a3d] text-[#b8860b] text-xs font-semibold rounded border border-[#b8860b]">Sahih Muslim #2710</span>
+                      <span className="px-2 py-1 bg-[#3a7a52] text-white text-xs font-bold rounded">✓ Sahih</span>
+                    </div>
+
+                    {/* Arabic text */}
+                    <div className="px-4 py-2 text-white text-xs text-right leading-relaxed overflow-y-auto flex-1 border-l-3 border-[#b8860b] bg-[#0a1f15]">
+                      <p className="font-serif leading-loose mb-2">حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا غُنْدَرٌ، حَدَّثَنَا شُعْبَةُ، عَنْ سَعْدٍ، عَنْ سَهْلِ بْنِ سَعْدٍ قَالَ، قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ إِنَّ فِي الْجَنَّةِ بَابًا يُقَالُ لَهُ الرَّيَّانُ يَدْخُلُ مِنْهُ الصَّائِمُونَ</p>
+                    </div>
+
+                    {/* Summary & Translation */}
+                    <div className="px-4 py-2 border-t border-[#2d5a3d] space-y-1 text-xs bg-[#0a1f15]">
+                      <p className="text-gray-300 leading-snug">The Prophet ﷺ said: "In Paradise there is a gate called Ar-Rayyan through which only the fasting people will enter."</p>
+                      <div className="bg-[#1a3a2d] rounded p-1 mt-1 border-l-2 border-[#b8860b]">
+                        <p className="text-[#b8860b] font-bold text-[0.7rem]">✨ AI Summary</p>
+                        <p className="text-white text-[0.65rem] leading-tight">Special honor for fasting people in Paradise</p>
+                      </div>
+                    </div>
+
+                    {/* Bottom actions */}
+                    <div className="px-4 py-2 border-t border-[#2d5a3d] flex items-center justify-between">
+                      <div className="flex gap-3 text-[#3a7a52]">
+                        <Volume2 className="w-4 h-4 cursor-pointer hover:text-[#b8860b]" />
+                        <Bookmark className="w-4 h-4 cursor-pointer hover:text-[#b8860b]" />
+                        <Share2 className="w-4 h-4 cursor-pointer hover:text-[#b8860b]" />
+                      </div>
+                      <p className="text-xs font-bold text-[#b8860b]">READ ›</p>
+                    </div>
+                  </div>
+
+                  {/* Notch */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-3xl"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="px-4 md:px-6 py-10 md:py-16 max-w-5xl mx-auto">
-        <div className="text-center mb-8 md:mb-12">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3 md:mb-4">
-            Free to explore. Pro for depth.
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Browse all 14,444 hadiths from Al-Sahihayn, read full text, and get 3 AI explanations daily --
-            completely free. Upgrade when you want deeper study tools.
-          </p>
-        </div>
-
-        {/* Explorer highlight */}
-        <div className="max-w-3xl mx-auto mb-6 rounded-xl border border-border bg-card p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-[#1B5E43] dark:text-[#6bb895]" />
-              <h3 className="font-semibold text-foreground">Explorer</h3>
-              <span className="text-xs font-bold text-[#1B5E43] dark:text-[#6bb895]">FREE</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1.5">
-            {["All 14,444 hadiths", "Full Arabic + English text", "Basic search", "3 AI explanations/day", "40 saved hadiths", "1 quiz/day"].map((f) => (
-              <span key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Check className="w-3 h-3 text-[#1B5E43] dark:text-[#6bb895] shrink-0" />{f}
-              </span>
+      {/* SECTION 2 — STATS BAR */}
+      <section className="bg-[#f5f0e8] px-6 py-12 border-y border-gray-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[
+              { icon: "📚", number: "14,444", label: "Hadiths", desc: "Sahih Bukhari & Sahih Muslim" },
+              { icon: "🗂", number: "20", label: "Topics", desc: "Every domain of Islamic life" },
+              { icon: "🌙", number: "365", label: "Sunnah", desc: "Daily practices of the Prophet ﷺ" },
+              { icon: "🤖", number: "AI", label: "HadithChat", desc: "Grounded in authentic narrations" },
+            ].map((stat, idx) => (
+              <div key={idx} className="text-center">
+                <div className="text-3xl md:text-4xl mb-2">{stat.icon}</div>
+                <p className="text-2xl md:text-3xl font-bold text-[#0d2b1e] mb-1">{stat.number}</p>
+                <p className="font-semibold text-[#0d2b1e] mb-1 text-sm">{stat.label}</p>
+                <p className="text-xs text-gray-600">{stat.desc}</p>
+              </div>
             ))}
           </div>
         </div>
-
-        {/* Paid plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 max-w-3xl mx-auto">
-          {PRODUCTS.map((plan) => {
-            const icons: Record<string, typeof Star> = {
-              "monthly-premium": Star,
-              "annual-premium": Crown,
-              "lifetime-access": Infinity,
-            }
-            const Icon = icons[plan.id] || Star
-
-            return (
-              <div
-                key={plan.id}
-                className={`relative rounded-xl p-5 flex flex-col ${
-                  plan.highlighted
-                    ? "gold-border premium-card ring-2 ring-[#C5A059]/30"
-                    : plan.id === "lifetime-access"
-                      ? "border-2 border-[#1B5E43]/40 dark:border-[#4a9973]/40 bg-card"
-                      : "premium-card"
-                }`}
-              >
-                {plan.badge && (
-                  <div
-                    className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-white text-xs font-bold whitespace-nowrap ${
-                      plan.highlighted
-                        ? "bg-gradient-to-r from-[#C5A059] to-[#E8C77D]"
-                        : "bg-gradient-to-r from-[#1B5E43] to-[#2D7A5B]"
-                    }`}
-                  >
-                    {plan.badge}
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2 mb-2">
-                  <Icon className="w-4 h-4 text-[#C5A059]" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#C5A059]">{plan.tierLabel}</span>
-                </div>
-
-                <div className="mb-3">
-                  <span className="text-2xl font-bold text-foreground">
-                    ${(plan.priceInCents / 100).toFixed(2)}
-                  </span>
-                  <span className="text-sm text-muted-foreground ml-1">
-                    {plan.interval === "month"
-                      ? "/mo"
-                      : plan.interval === "year"
-                        ? "/yr"
-                        : ""}
-                  </span>
-                  {plan.interval === "year" && (
-                    <span className="block text-xs text-[#C5A059] font-medium mt-0.5">
-                      ${(plan.priceInCents / 100 / 12).toFixed(2)}/mo billed yearly
-                    </span>
-                  )}
-                </div>
-
-                {plan.features && (
-                  <ul className="space-y-1.5 mb-4 flex-1">
-                    {plan.features.slice(0, 3).map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Check className="w-3.5 h-3.5 text-[#1B5E43] dark:text-[#6bb895] shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <Link
-                  href={`/pricing?plan=${plan.id}`}
-                  className={`block w-full py-2.5 rounded-xl font-semibold text-sm text-center transition-all mt-auto ${
-                    plan.highlighted
-                      ? "bg-gradient-to-r from-[#C5A059] to-[#E8C77D] text-white hover:opacity-90 shadow-md"
-                      : plan.id === "lifetime-access"
-                        ? "bg-gradient-to-r from-[#1B5E43] to-[#2D7A5B] text-white hover:opacity-90"
-                        : "bg-muted border border-border text-foreground hover:border-secondary hover:text-secondary"
-                  }`}
-                >
-                  {plan.trialDays ? `Start Free Trial` : plan.mode === "payment" ? "Get Founding Access" : "Subscribe"}
-                </Link>
-              </div>
-            )
-          })}
-        </div>
-
-        <p className="text-center text-sm text-muted-foreground mt-8">
-          Not ready to commit? <Link href="/login" className="gold-text font-medium hover:underline">Start free as an Explorer</Link> -- browse all 14,444 hadiths, basic search, and 3 AI explanations daily.
-        </p>
       </section>
 
-      {/* Share CTA */}
-      <ShareBanner />
-
-      {/* Footer */}
-      <footer className="px-4 md:px-6 py-8 md:py-12 border-t border-border">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="relative w-8 h-8">
-              <Image
-                src="/images/gemini-generated-image-xw5svjxw5svjxw5s.jpeg"
-                alt="Authentic Hadith Logo"
-                fill
-                className="object-contain rounded-full"
-              />
-            </div>
-            <span className="text-sm font-semibold gold-text tracking-wider uppercase">
-              Authentic Hadith
-            </span>
-          </div>
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <Link href="/pricing" className="hover:text-foreground transition-colors">
-              Pricing
+      {/* SECTION 3 — BROWSE BY TOPIC */}
+      <section className="bg-white px-6 py-24">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-[#0d2b1e] font-semibold mb-3">Organized Knowledge</p>
+            <h2 className="font-serif text-4xl md:text-5xl text-[#0d2b1e] mb-8 leading-tight">
+              Every topic.<br /><span className="text-[#b8860b]">Every hadith.</span><br />In one place.
+            </h2>
+            <p className="text-base text-gray-700 mb-6 leading-relaxed">
+              14,444 hadiths tagged and organized across 20 categories — from Salah & Prayer to Family & Marriage to Business & Trade. Each with Arabic text, English translation, scholarly grading, and complete narrator chain.
+            </p>
+            <Link href="/login" className="inline-flex items-center gap-2 text-[#0d2b1e] font-semibold hover:text-[#2d5a3d] transition-colors">
+              Explore all categories <span>→</span>
             </Link>
-            <a href="mailto:support@authentichadith.app" className="hover:text-foreground transition-colors">
-              Contact
-            </a>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Made with care for the Muslim community
+          <div className="hidden md:flex justify-center">
+            <div className="text-center text-gray-400 p-12">Browse by Topic mockup appears on left side of hero above</div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4 — STORIES */}
+      <section className="bg-[#0d2b1e] px-6 py-24">
+        <div className="max-w-7xl mx-auto text-center mb-16">
+          <p className="text-xs uppercase tracking-widest text-[#b8860b] font-semibold mb-4">Stories</p>
+          <h2 className="font-serif text-4xl md:text-5xl text-white mb-6">
+            13 Companions. 25 Prophets.<br /><span className="text-[#b8860b]">Their full stories.</span>
+          </h2>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            Multi-part narratives with Quranic references, historical context, and reading times. From Abu Bakr as-Siddiq to Adam (peace be upon him).
           </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Companions */}
+          <div className="text-white space-y-6">
+            <h3 className="font-serif text-2xl">Stories — Companions</h3>
+            {[
+              { name: "Abu Bakr as-Siddiq", title: "The Truthful One", parts: "5 parts · 25 min", tags: "First Male Believer · First Caliph" },
+              { name: "Khadijah bint Khuwaylid", title: "Mother of the Believers", parts: "4 parts · 20 min", tags: "First Believer · Prophet's Wife" },
+              { name: "Umar ibn al-Khattab", title: "The Criterion", parts: "6 parts · 32 min", tags: "Second Caliph · Spreader of Islam" },
+            ].map((comp, idx) => (
+              <div key={idx} className="bg-[#2d5a3d]/40 rounded-lg p-4 border border-[#b8860b]/30 cursor-pointer hover:bg-[#2d5a3d]/60 transition">
+                <p className="text-white font-semibold">{comp.name}</p>
+                <p className="text-[#b8860b] text-sm mb-2">{comp.title}</p>
+                <p className="text-gray-300 text-sm mb-2">{comp.parts}</p>
+                <p className="text-gray-400 text-xs">{comp.tags}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Prophets */}
+          <div className="text-white space-y-6">
+            <h3 className="font-serif text-2xl">Stories — Prophets</h3>
+            {[
+              { num: "01", name: "Adam", ar: "آدم", title: "Father of Humanity", mentions: "25 mentions" },
+              { num: "02", name: "Nuh (Noah)", ar: "نوح", title: "The Preacher", mentions: "43 mentions" },
+              { num: "03", name: "Ibrahim (Abraham)", ar: "إبراهيم", title: "The Khalil", mentions: "69 mentions" },
+            ].map((prophet, idx) => (
+              <div key={idx} className="border-l-4 border-[#b8860b] pl-4 py-2 cursor-pointer hover:bg-[#2d5a3d]/20 transition rounded pr-4">
+                <p className="text-white font-semibold text-sm">{prophet.num} · {prophet.name}</p>
+                <p className="text-gray-300 text-xs">{prophet.ar} · {prophet.title}</p>
+                <p className="text-gray-400 text-xs mt-1">{prophet.mentions} in the Quran</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5 — SUNNAH PRACTICES */}
+      <section className="bg-white px-6 py-24">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-[#0d2b1e] font-semibold mb-3">Sunnah Practices</p>
+            <h2 className="font-serif text-4xl md:text-5xl text-[#0d2b1e] mb-8">
+              365 ways to live<br /><span className="text-[#b8860b]">the Sunnah today.</span>
+            </h2>
+            <p className="text-base text-gray-700 mb-6 leading-relaxed">
+              Not just reading — practicing. 365 authentic Sunnah acts organized across 10 categories with step-by-step guidance, supporting hadith, and daily reminders.
+            </p>
+            <Link href="/login" className="inline-flex items-center gap-2 text-[#0d2b1e] font-semibold hover:text-[#2d5a3d] transition-colors">
+              Start practicing <span>→</span>
+            </Link>
+          </div>
+
+          <div className="bg-[#f5f0e8] rounded-lg p-8">
+            <div className="space-y-3">
+              {[
+                { icon: "🕌", name: "Sunnah of Salah", count: "37" },
+                { icon: "❤️", name: "Sunnah of Character", count: "49" },
+                { icon: "🏘️", name: "Sunnah at Home", count: "28" },
+                { icon: "👥", name: "Sunnah with People", count: "42" },
+                { icon: "🍽️", name: "Sunnah of Eating", count: "33" },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-3 rounded hover:bg-white transition cursor-pointer">
+                  <span className="text-2xl">{item.icon}</span>
+                  <div className="flex-1">
+                    <p className="font-semibold text-[#0d2b1e]">{item.name}</p>
+                  </div>
+                  <p className="font-bold text-[#b8860b]">{item.count}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6 — HADITHCHAT AI */}
+      <section className="bg-[#0d2b1e] px-6 py-24">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="text-white">
+            <p className="text-xs uppercase tracking-widest text-[#b8860b] font-semibold mb-3">HadithChat AI</p>
+            <h2 className="font-serif text-4xl md:text-5xl mb-8">
+              Ask anything.<br /><span className="text-[#b8860b]">Answered from authentic sources.</span>
+            </h2>
+            <p className="text-base text-gray-300 mb-8 leading-relaxed">
+              Powered by AI grounded in the 14,444 authenticated hadiths from Sahih Bukhari and Sahih Muslim. Ask about Islamic practice, ethics, history — every answer is traced back to the original hadith.
+            </p>
+            <div className="space-y-4 mb-8">
+              <p className="text-sm text-gray-300">Example questions:</p>
+              {[
+                '"What does Islam say about honesty in business?"',
+                '"How did the Prophet handle family disputes?"',
+                '"What are the benefits of dhikr (remembrance)?"',
+              ].map((q, idx) => (
+                <p key={idx} className="text-[#b8860b] text-sm pl-4 border-l-2 border-[#b8860b]">{q}</p>
+              ))}
+            </div>
+            <Link href="/login" className="inline-flex items-center gap-2 px-6 py-3 bg-[#b8860b] text-[#0d2b1e] font-semibold rounded-lg hover:bg-[#d4af37] transition-colors">
+              Try HadithChat <span>→</span>
+            </Link>
+          </div>
+
+          <div className="bg-[#2d5a3d]/30 rounded-lg p-6 border border-[#b8860b]/20">
+            <div className="space-y-4 text-sm">
+              <div className="bg-[#1a3a2d] rounded-lg p-3 text-gray-300">
+                <p className="text-[0.8rem]">User: "What's the Sunnah about seeking knowledge?"</p>
+              </div>
+              <div className="bg-[#3a7a52]/30 rounded-lg p-3 text-gray-200">
+                <p className="text-[0.8rem] mb-2 text-[#b8860b] font-semibold">HadithChat:</p>
+                <p className="text-[0.8rem] leading-snug">The Prophet ﷺ said, "Seeking knowledge is an obligation for every Muslim." (Sahih Muslim 224)</p>
+                <p className="text-[0.7rem] text-gray-400 mt-2">3 more hadiths about this topic</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 7 — DOWNLOAD CTA */}
+      <section className="bg-[#0d2b1e] px-6 py-24 text-center">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-xs uppercase tracking-widest text-[#b8860b] font-semibold mb-4">Begin with knowledge</p>
+          <h2 className="font-serif text-4xl md:text-5xl text-white mb-6">Download Authentic Hadith today</h2>
+          <p className="text-lg text-gray-300 mb-10">
+            64,464 authentic hadiths from Sahih Bukhari, Sahih Muslim, and the Four Sunans — in one beautifully designed app.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Link href="/login" className="px-8 py-4 bg-white text-[#0d2b1e] rounded-xl font-semibold hover:bg-gray-100 transition-all flex items-center gap-3 justify-center">
+              <Apple className="w-5 h-5" />
+              <div>
+                <div className="text-xs text-gray-600">Download on</div>
+                <div>App Store</div>
+              </div>
+            </Link>
+            <Link href="/login" className="px-8 py-4 bg-white text-[#0d2b1e] rounded-xl font-semibold hover:bg-gray-100 transition-all flex items-center gap-3 justify-center">
+              <Smartphone className="w-5 h-5" />
+              <div>
+                <div className="text-xs text-gray-600">Get it on</div>
+                <div>Google Play</div>
+              </div>
+            </Link>
+          </div>
+
+          <p className="text-sm text-gray-400">Available on iOS and Android · Free with optional premium features</p>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-black px-6 py-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+            <div>
+              <p className="text-white font-semibold mb-4">Product</p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#" className="hover:text-white transition">Browse Hadiths</Link></li>
+                <li><Link href="#" className="hover:text-white transition">HadithChat</Link></li>
+                <li><Link href="#" className="hover:text-white transition">Sunnah Practices</Link></li>
+                <li><Link href="#" className="hover:text-white transition">Stories</Link></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-white font-semibold mb-4">Company</p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#" className="hover:text-white transition">About</Link></li>
+                <li><Link href="#" className="hover:text-white transition">Blog</Link></li>
+                <li><Link href="#" className="hover:text-white transition">Careers</Link></li>
+                <li><Link href="#" className="hover:text-white transition">Contact</Link></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-white font-semibold mb-4">Legal</p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#" className="hover:text-white transition">Privacy</Link></li>
+                <li><Link href="#" className="hover:text-white transition">Terms</Link></li>
+                <li><Link href="#" className="hover:text-white transition">License</Link></li>
+              </ul>
+            </div>
+            <div className="col-span-2 md:col-span-2">
+              <Link href="/" className="flex items-center gap-2 mb-4 hover:opacity-80 transition">
+                <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={32} height={32} className="w-8 h-8 object-contain" />
+                <span className="text-white font-semibold">Authentic Hadith</span>
+              </Link>
+              <p className="text-sm text-gray-400">64,464 authenticated hadiths from the Six Books of Hadith</p>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 pt-8">
+            <p className="text-sm text-gray-400 text-center">
+              © 2026 Authentic Hadith. All rights reserved. Hadiths sourced from Sahih Bukhari, Sahih Muslim, Abu Dawud, Tirmidhi, Ibn Majah, and Nasai.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
