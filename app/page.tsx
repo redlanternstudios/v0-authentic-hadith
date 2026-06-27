@@ -74,28 +74,35 @@ export default function LandingPage() {
 
                 {/* Badges */}
                 <div className="px-4 pt-4 pb-2 flex gap-2">
-                  <span className="px-2 py-1 bg-[#2d5a3d] text-[#b8860b] text-xs font-semibold rounded">Sahih Muslim</span>
-                  <span className="px-2 py-1 bg-[#2d5a3d] text-[#b8860b] text-xs font-semibold rounded">Sahih</span>
+                  <span className="px-2 py-1 bg-[#2d5a3d] text-[#b8860b] text-xs font-semibold rounded">Sahih Muslim #2710</span>
+                  <span className="px-2 py-1 bg-[#3a7a52] text-white text-xs font-semibold rounded">Sahih</span>
                 </div>
 
                 {/* Arabic text */}
-                <div className="px-4 py-3 text-white text-sm text-right leading-relaxed overflow-y-auto flex-1">
-                  <p className="text-xs text-[#b8860b] mb-2 text-right">حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا غُنْدَرٌ</p>
+                <div className="px-4 py-3 text-white text-sm text-right leading-relaxed overflow-y-auto flex-1 border-l-2 border-[#b8860b]">
+                  <p className="text-[0.85rem] text-white mb-3 text-right font-serif leading-loose">حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا غُنْدَرٌ، حَدَّثَنَا شُعْبَةُ، عَنْ سَعْدٍ، عَنْ سَهْلِ بْنِ سَعْدٍ قَالَ، قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ إِنَّ فِي الْجَنَّةِ بَابًا يُقَالُ لَهُ الرَّيَّانُ يَدْخُلُ مِنْهُ الصَّائِمُونَ</p>
                 </div>
 
-                {/* Translation preview */}
-                <div className="px-4 pb-2 text-gray-300 text-xs">
-                  <p>ABU'L-BAKHTARI REPORTED: WE SAW THE NEW MOON...</p>
+                {/* Translation & AI Summary */}
+                <div className="px-4 py-2 border-t border-[#2d5a3d] space-y-2 text-xs">
+                  <div>
+                    <p className="text-[#b8860b] font-semibold mb-1">Narrator: Sahl B. Sa'd (May Allah be pleased with him)</p>
+                    <p className="text-gray-300 leading-relaxed">The Prophet ﷺ said: "In Paradise there is a gate called Ar-Rayyan through which only the fasting people will enter on the Day of Resurrection."</p>
+                  </div>
+                  <div className="bg-[#1a3a2d] rounded p-2 mt-1">
+                    <p className="text-[#b8860b] font-semibold mb-1">✨ AI Summary</p>
+                    <p className="text-gray-300 text-[0.75rem] leading-snug">This hadith highlights the special honor given to those who fast regularly, showing fasting&apos;s spiritual value and the rewards awaiting the faithful in Paradise.</p>
+                  </div>
                 </div>
 
                 {/* Bottom actions */}
-                <div className="px-4 py-3 border-t border-[#2d5a3d] flex items-center justify-between text-gray-300">
+                <div className="px-4 py-2 border-t border-[#2d5a3d] flex items-center justify-between text-gray-300">
                   <div className="flex gap-3">
-                    <Volume2 className="w-4 h-4 cursor-pointer hover:text-white transition" />
-                    <Bookmark className="w-4 h-4 cursor-pointer hover:text-white transition" />
-                    <Share2 className="w-4 h-4 cursor-pointer hover:text-white transition" />
+                    <Volume2 className="w-4 h-4 cursor-pointer hover:text-[#b8860b] transition" />
+                    <Bookmark className="w-4 h-4 cursor-pointer hover:text-[#b8860b] transition" />
+                    <Share2 className="w-4 h-4 cursor-pointer hover:text-[#b8860b] transition" />
                   </div>
-                  <p className="text-xs font-medium text-[#b8860b]">Read Full Hadith ›</p>
+                  <p className="text-xs font-medium text-[#b8860b]">Read Full ›</p>
                 </div>
               </div>
 
