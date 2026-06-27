@@ -8,7 +8,9 @@ export default function LandingPage() {
       {/* HEADER */}
       <header className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-          <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={40} height={40} className="w-8 h-8 md:w-10 md:h-10" />
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-[#0d2b1e] to-[#2d5a3d] flex items-center justify-center border border-[#b8860b]">
+            <span className="text-white font-serif text-sm md:text-base font-bold">ح</span>
+          </div>
           <span className="text-sm md:text-base font-semibold text-[#0d2b1e]">Authentic Hadith</span>
         </Link>
         <div className="flex items-center gap-3">
@@ -68,41 +70,43 @@ export default function LandingPage() {
                 </div>
 
                 {/* Header */}
-                <div className="bg-[#0d2b1e] px-4 py-3 border-b border-[#2d5a3d]">
-                  <p className="text-[#b8860b] text-xs font-semibold text-center">✦ Hadith of the Day</p>
+                <div className="bg-gradient-to-r from-[#0d2b1e] to-[#1a3a2d] px-4 py-3 border-b-2 border-[#b8860b]">
+                  <p className="text-[#b8860b] text-xs font-semibold text-center">✦ HADITH OF THE DAY ✦</p>
                 </div>
 
                 {/* Badges */}
-                <div className="px-4 pt-4 pb-2 flex gap-2">
-                  <span className="px-2 py-1 bg-[#2d5a3d] text-[#b8860b] text-xs font-semibold rounded">Sahih Muslim #2710</span>
-                  <span className="px-2 py-1 bg-[#3a7a52] text-white text-xs font-semibold rounded">Sahih</span>
+                <div className="px-4 pt-4 pb-2 flex gap-2 items-center">
+                  <span className="px-2 py-1 bg-[#2d5a3d] text-[#b8860b] text-xs font-semibold rounded border border-[#b8860b]">Sahih Muslim #2710</span>
+                  <span className="px-2 py-1 bg-[#3a7a52] text-white text-xs font-bold rounded">✓ Sahih</span>
+                  <span className="text-[#b8860b] text-xs font-semibold">14,444 Authentic</span>
                 </div>
 
                 {/* Arabic text */}
-                <div className="px-4 py-3 text-white text-sm text-right leading-relaxed overflow-y-auto flex-1 border-l-2 border-[#b8860b]">
+                <div className="px-4 py-3 text-white text-sm text-right leading-relaxed overflow-y-auto flex-1 border-l-3 border-[#b8860b] bg-[#0a1f15]">
                   <p className="text-[0.85rem] text-white mb-3 text-right font-serif leading-loose">حَدَّثَنَا أَبُو بَكْرِ بْنُ أَبِي شَيْبَةَ، حَدَّثَنَا غُنْدَرٌ، حَدَّثَنَا شُعْبَةُ، عَنْ سَعْدٍ، عَنْ سَهْلِ بْنِ سَعْدٍ قَالَ، قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ إِنَّ فِي الْجَنَّةِ بَابًا يُقَالُ لَهُ الرَّيَّانُ يَدْخُلُ مِنْهُ الصَّائِمُونَ</p>
                 </div>
 
                 {/* Translation & AI Summary */}
-                <div className="px-4 py-2 border-t border-[#2d5a3d] space-y-2 text-xs">
+                <div className="px-4 py-3 border-t-2 border-[#b8860b] space-y-2 text-xs bg-[#0a1f15]">
                   <div>
-                    <p className="text-[#b8860b] font-semibold mb-1">Narrator: Sahl B. Sa'd (May Allah be pleased with him)</p>
-                    <p className="text-gray-300 leading-relaxed">The Prophet ﷺ said: "In Paradise there is a gate called Ar-Rayyan through which only the fasting people will enter on the Day of Resurrection."</p>
+                    <p className="text-[#b8860b] font-bold mb-1">Narrator:</p>
+                    <p className="text-white font-semibold mb-2">Sahl B. Sa'd (May Allah be pleased with him)</p>
+                    <p className="text-gray-200 leading-relaxed">The Prophet ﷺ said: <span className="text-[#b8860b] font-semibold">"In Paradise there is a gate called Ar-Rayyan through which only the fasting people will enter on the Day of Resurrection."</span></p>
                   </div>
-                  <div className="bg-[#1a3a2d] rounded p-2 mt-1">
-                    <p className="text-[#b8860b] font-semibold mb-1">✨ AI Summary</p>
-                    <p className="text-gray-300 text-[0.75rem] leading-snug">This hadith highlights the special honor given to those who fast regularly, showing fasting&apos;s spiritual value and the rewards awaiting the faithful in Paradise.</p>
+                  <div className="bg-[#1a3a2d] rounded p-2 mt-2 border-l-3 border-[#b8860b]">
+                    <p className="text-[#b8860b] font-bold text-[0.8rem] mb-1">✨ AI SUMMARY</p>
+                    <p className="text-white text-[0.75rem] leading-snug">This hadith highlights the <span className="text-[#b8860b] font-semibold">special honor given to those who fast</span>, showing fasting&apos;s spiritual value and the rewards awaiting the faithful in Paradise.</p>
                   </div>
                 </div>
 
                 {/* Bottom actions */}
-                <div className="px-4 py-2 border-t border-[#2d5a3d] flex items-center justify-between text-gray-300">
-                  <div className="flex gap-3">
+                <div className="px-4 py-2 border-t-2 border-[#2d5a3d] flex items-center justify-between bg-[#0a1f15]">
+                  <div className="flex gap-3 text-[#3a7a52]">
                     <Volume2 className="w-4 h-4 cursor-pointer hover:text-[#b8860b] transition" />
                     <Bookmark className="w-4 h-4 cursor-pointer hover:text-[#b8860b] transition" />
                     <Share2 className="w-4 h-4 cursor-pointer hover:text-[#b8860b] transition" />
                   </div>
-                  <p className="text-xs font-medium text-[#b8860b]">Read Full ›</p>
+                  <p className="text-xs font-bold text-[#b8860b]">READ FULL ›</p>
                 </div>
               </div>
 
@@ -416,7 +420,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6 pb-6 border-b border-gray-700">
             <div className="flex items-center gap-2">
-              <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={40} height={40} className="w-8 h-8" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0d2b1e] to-[#2d5a3d] flex items-center justify-center border border-[#b8860b]">
+                <span className="text-white font-serif text-sm font-bold">ح</span>
+              </div>
               <span className="text-white font-semibold">Authentic Hadith</span>
             </div>
             <nav className="flex items-center gap-6 text-sm text-gray-400">
