@@ -7,11 +7,9 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#f5f0e8]">
       {/* HEADER */}
       <header className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
-        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-[#0d2b1e] to-[#2d5a3d] flex items-center justify-center border border-[#b8860b]">
-            <span className="text-white font-serif text-sm md:text-base font-bold">ح</span>
-          </div>
-          <span className="text-sm md:text-base font-semibold text-[#0d2b1e]">Authentic Hadith</span>
+        <Link href="/" className="flex items-center gap-3 hover:opacity-85 transition">
+          <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={48} height={48} className="w-10 h-10 md:w-12 md:h-12 object-contain" priority />
+          <span className="hidden sm:inline text-sm md:text-base font-semibold text-[#0d2b1e]">Authentic Hadith</span>
         </Link>
         <div className="flex items-center gap-3">
           <Link
@@ -419,10 +417,8 @@ export default function LandingPage() {
       <footer className="bg-gray-900 px-6 py-8 md:py-12">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6 pb-6 border-b border-gray-700">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0d2b1e] to-[#2d5a3d] flex items-center justify-center border border-[#b8860b]">
-                <span className="text-white font-serif text-sm font-bold">ح</span>
-              </div>
+            <div className="flex items-center gap-3">
+              <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={40} height={40} className="w-8 h-8 object-contain" />
               <span className="text-white font-semibold">Authentic Hadith</span>
             </div>
             <nav className="flex items-center gap-6 text-sm text-gray-400">
