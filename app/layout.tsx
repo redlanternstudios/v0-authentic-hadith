@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://authentichadith.app"),
   description:
     "Access verified hadith collections, guided learning paths, daily sunnah practices, stories of the prophets and companions, and AI-powered study tools -- all from authenticated sources.",
-  generator: "v0.app",
   verification: {
     google: "pu6PCNjJGNwTlF-CoQmeSTi_sDeWH5vwBexQ-cUA6B4",
   },
@@ -77,6 +76,7 @@ export const metadata: Metadata = {
     description: "Access verified hadith collections, guided learning paths, and AI-powered study tools from authenticated sources.",
     images: ["/images/gemini-generated-image-xw5svjxw5svjxw5s.jpeg"],
   },
+    generator: 'v0.app'
 }
 
 export const viewport: Viewport = {
