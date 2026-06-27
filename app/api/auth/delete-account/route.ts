@@ -27,25 +27,37 @@ const USER_DATA_TABLES = [
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    if (body?.confirmation !== "DELETE MY ACCOUNT") {
+    // Accept "DELETE" (mobile app) and "DELETE MY ACCOUNT" (web). Mismatch =
+    // Guideline 5.1.1 rejection — deletion silently fails on device. FIX-065.
+    const confirmation = body?.confirmation
+    if (confirmation !== "DELETE" && confirmation !== "DELETE MY ACCOUNT") {
       return NextResponse.json(
-        { error: "Invalid confirmation. Please type 'DELETE MY ACCOUNT' to proceed." },
+        { error: "Invalid confirmation. Please type 'DELETE' to proceed." },
         { status: 400 }
       )
     }
 
-    const supabase = await createClient()
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
+    const admin = getSupabaseAdmin()
 
-    if (authError || !user) {
+    // Mobile sends Authorization: Bearer <token> — no cookies. Old cookie-only
+    // path 401'd every mobile delete with a valid session. FIX-065.
+    let user = null
+    const authHeader = request.headers.get("authorization") || ""
+    const bearer = authHeader.replace(/^Bearer\s+/i, "").trim()
+    if (bearer) {
+      const { data, error } = await admin.auth.getUser(bearer)
+      if (!error) user = data.user
+    } else {
+      const supabase = await createClient()
+      const { data, error } = await supabase.auth.getUser()
+      if (!error) user = data.user
+    }
+
+    if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
     }
 
     const userId = user.id
-    const admin = getSupabaseAdmin()
     const deletionErrors: string[] = []
 
     for (const table of USER_DATA_TABLES) {
@@ -70,13 +82,20 @@ export async function POST(request: Request) {
       )
     }
 
-    await supabase.auth.signOut()
+    // Best-effort cookie sign-out (web only). Mobile has no cookie client so
+    // this must never throw — the user is already deleted. FIX-065.
+    try {
+      const cookieClient = await createClient()
+      await cookieClient.auth.signOut()
+    } catch {
+      // no cookie session on mobile — nothing to sign out
+    }
 
     const response = NextResponse.json({
       success: true,
       deletionErrors: deletionErrors.length > 0 ? deletionErrors : undefined,
     })
-    response.cookies.set("ah_onboarded", "", { path: "/", maxAge: 0 })
+    response.cookies.set("qbos_onboarded", "", { path: "/", maxAge: 0 })
     return response
   } catch (error) {
     console.error("Account deletion error:", error)
