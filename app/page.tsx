@@ -7,12 +7,10 @@ export default function LandingPage() {
     <div className="min-h-screen bg-[#f5f0e8]">
       {/* HEADER */}
       <header className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 md:w-10 md:h-10 bg-[#0d2b1e] rounded-full flex items-center justify-center">
-            <span className="text-white font-serif text-lg">ح</span>
-          </div>
+        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
+          <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={40} height={40} className="w-8 h-8 md:w-10 md:h-10" />
           <span className="text-sm md:text-base font-semibold text-[#0d2b1e]">Authentic Hadith</span>
-        </div>
+        </Link>
         <div className="flex items-center gap-3">
           <Link
             href="/login"
@@ -34,7 +32,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left side */}
           <div className="text-white">
-            <p className="text-xs uppercase tracking-widest text-[#b8860b] font-semibold mb-4">64,464 Authenticated Hadiths</p>
+            <p className="text-xs uppercase tracking-widest text-[#b8860b] font-semibold mb-4">14,444 Authenticated Hadiths</p>
             <h1 className="font-serif text-4xl md:text-5xl leading-tight mb-6">
               The Sunnah,<br />Authenticated.
             </h1>
@@ -55,7 +53,7 @@ export default function LandingPage() {
                 Get on Google Play
               </Link>
             </div>
-            <p className="text-xs text-gray-300">Sahih Bukhari · Sahih Muslim · Abu Dawud · Tirmidhi · Ibn Majah · Nasai</p>
+            <p className="text-xs text-gray-300">Sahih Bukhari · Sahih Muslim</p>
           </div>
 
           {/* Right side — Phone mockup */}
@@ -113,7 +111,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: BookOpen, number: "64,464", label: "Hadiths", desc: "Across 6 major collections" },
+              { icon: BookOpen, number: "14,444", label: "Hadiths", desc: "Sahih Bukhari & Sahih Muslim" },
               { icon: Zap, number: "20", label: "Topics", desc: "From Prayer to Family to Business" },
               { icon: Moon, number: "365", label: "Sunnah Practices", desc: "Daily habits of the Prophet ﷺ" },
               { icon: MessageCircle, number: "AI", label: "HadithChat", desc: "Ask anything, answered from authentic sources" },
@@ -143,7 +141,7 @@ export default function LandingPage() {
             <p className="text-xs uppercase tracking-widest text-[#0d2b1e] font-semibold mb-3">Organized Knowledge</p>
             <h2 className="font-serif text-3xl md:text-4xl text-[#0d2b1e] mb-6">Every topic. Every hadith. In one place.</h2>
             <p className="text-base text-gray-700 mb-6 leading-relaxed">
-              64,464 hadiths tagged and organized across 20 categories — from Salah & Prayer to Family & Marriage to Business & Trade. Each with Arabic, English, scholarly grading, and narrator chain.
+              14,444 hadiths from Sahih Bukhari and Sahih Muslim, tagged and organized across 20 categories — from Salah & Prayer to Family & Marriage to Business & Trade. Each with Arabic, English, scholarly grading, and complete narrator chain.
             </p>
             <p className="text-sm text-gray-600 flex flex-wrap gap-3">
               <span>Salah & Prayer</span>
@@ -170,7 +168,7 @@ export default function LandingPage() {
                 </div>
                 <div className="bg-[#0d2b1e] px-4 py-3 border-b border-[#2d5a3d]">
                   <p className="text-white text-sm font-semibold">Browse by Topic</p>
-                  <p className="text-gray-400 text-xs mt-1">64,464 tagged hadiths across 20 categories</p>
+                  <p className="text-gray-400 text-xs mt-1">14,444 hadiths from Sahih Muslim & Sahih Bukhari</p>
                 </div>
                 <div className="px-4 py-3 overflow-y-auto flex-1 space-y-2">
                   {[
@@ -411,9 +409,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6 pb-6 border-b border-gray-700">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#0d2b1e] rounded-full flex items-center justify-center">
-                <span className="text-white font-serif text-lg">ح</span>
-              </div>
+              <Image src="/authentic-hadith-logo.png" alt="Authentic Hadith" width={40} height={40} className="w-8 h-8" />
               <span className="text-white font-semibold">Authentic Hadith</span>
             </div>
             <nav className="flex items-center gap-6 text-sm text-gray-400">
