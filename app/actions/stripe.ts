@@ -178,7 +178,7 @@ export async function startCheckoutSession(productId: string) {
       throw new Error("Failed to create checkout session -- no client secret returned")
     }
 
-    return session.client_secret
+    return { clientSecret: session.client_secret, sessionId: session.id }
   } catch (error) {
     console.error("Checkout error:", error)
     

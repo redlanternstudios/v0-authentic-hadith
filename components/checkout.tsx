@@ -13,12 +13,16 @@ export default function Checkout({ productId }: { productId: string }) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [key, setKey] = useState(0)
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const fetchClientSecret = useCallback(async () => {
     try {
       setError(null)
-      const secret = await startCheckoutSession(productId)
-      return secret
+      const result = await startCheckoutSession(productId)
+      if (result) {
+        setSessionId(result.sessionId)
+      }
+      return result?.clientSecret ?? ""
     } catch (err) {
       // Extract a user-friendly error message
       let message = "Failed to start checkout. Please try again."
@@ -43,8 +47,9 @@ export default function Checkout({ productId }: { productId: string }) {
   }, [productId])
 
   const handleComplete = useCallback(() => {
-    router.push("/checkout/success")
-  }, [router])
+    const query = sessionId ? `?session_id=${sessionId}` : ""
+    router.push(`/checkout/success${query}`)
+  }, [router, sessionId])
 
   const handleRetry = () => {
     setError(null)
