@@ -67,6 +67,24 @@ export function useSubscription(): UserSubscription {
           currentPeriodEnd: data.current_period_end,
           loading: false,
         })
+        return
+      }
+
+      // Fall back to profiles table (covers manually granted lifetime accounts)
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_tier, subscription_status, subscription_expires_at")
+        .eq("user_id", user.id)
+        .single()
+
+      if (profile && (profile.subscription_tier === "premium" || profile.subscription_tier === "lifetime")) {
+        setSub({
+          isPremium: true,
+          plan: profile.subscription_tier,
+          status: profile.subscription_status,
+          currentPeriodEnd: profile.subscription_expires_at,
+          loading: false,
+        })
       } else {
         setSub((prev) => ({ ...prev, loading: false }))
       }
