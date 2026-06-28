@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useState } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { Loader2, ArrowLeft, ArrowRight } from "lucide-react"
@@ -50,6 +50,24 @@ function OnboardingContent() {
   const searchParams = useSearchParams()
   const postOnboardingRedirect = searchParams.get("redirect")
   const supabase = getSupabaseBrowserClient()
+
+  // Guard: if the user is already onboarded, send them home.
+  // Prevents back-swipe in the iOS WebView from re-triggering onboarding.
+  useEffect(() => {
+    async function checkAlreadyOnboarded() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return // Not logged in — let them go through onboarding (sign-up flow)
+      const { data: prefs } = await supabase
+        .from("user_preferences")
+        .select("onboarded")
+        .eq("user_id", user.id)
+        .single()
+      if (prefs?.onboarded) {
+        router.replace(postOnboardingRedirect ? decodeURIComponent(postOnboardingRedirect) : "/home")
+      }
+    }
+    checkAlreadyOnboarded()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)

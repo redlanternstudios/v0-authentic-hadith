@@ -41,45 +41,13 @@ export function AuthForm() {
       setLoading(false)
       return
     }
-    // Sign in successful
+    // Sign in successful — always go to home.
+    // Onboarding is first-time only, triggered from the sign-up flow.
+    // Any user who can sign in has already onboarded (or is a team account).
     if (data?.user) {
-      // Ensure profile exists (create if needed)
-      const { data: existingProfile } = await supabase
-        .from("profiles")
-        .select("id, subscription_tier")
-        .eq("user_id", data.user.id)
-        .single()
-
-      if (!existingProfile) {
-        await supabase.from("profiles").insert({
-          user_id: data.user.id,
-          name: data.user.user_metadata?.full_name || data.user.user_metadata?.name || null,
-          avatar_url: data.user.user_metadata?.avatar_url || null,
-          role: "user",
-          subscription_tier: "free",
-          subscription_status: "none",
-        })
-      }
-
-      // Check if user has completed onboarding
-      const { data: prefs } = await supabase
-        .from("user_preferences")
-        .select("onboarded")
-        .eq("user_id", data.user.id)
-        .single()
-
-      if (prefs?.onboarded) {
-        // User has onboarded - set cookies and go to home
-        document.cookie = "ah_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
-        document.cookie = "ah_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
-        router.push(redirectTo || "/home")
-      } else {
-        // User hasn't onboarded - send to onboarding
-        const onboardingUrl = redirectTo
-          ? `/onboarding?redirect=${encodeURIComponent(redirectTo)}`
-          : "/onboarding"
-        router.push(onboardingUrl)
-      }
+      document.cookie = "ah_onboarded=1; path=/; max-age=31536000; SameSite=Lax"
+      document.cookie = "ah_safety_agreed=1; path=/; max-age=31536000; SameSite=Lax"
+      router.push(redirectTo || "/home")
     } else {
       router.push(redirectTo || "/home")
     }
