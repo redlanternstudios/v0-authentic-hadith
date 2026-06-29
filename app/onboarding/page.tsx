@@ -177,7 +177,7 @@ function OnboardingContent() {
           .eq("user_id", user.id)
 
         if (profileError) {
-          // Profile update failed
+          console.error("[onboarding] profile update failed:", profileError)
         }
       } else {
         const { error: profileError } = await supabase.from("profiles").insert({
@@ -188,7 +188,7 @@ function OnboardingContent() {
         })
 
         if (profileError) {
-          // Profile insert failed
+          console.error("[onboarding] profile insert failed:", profileError)
         }
       }
 
@@ -215,8 +215,13 @@ function OnboardingContent() {
             .eq("user_id", user.id)
         : await supabase.from("user_preferences").insert(prefsPayload)
 
+      // Fail loudly: this write carries `onboarded: true`, which the route guard
+      // reads to decide whether to show onboarding. If it silently fails we'd
+      // route the user to success now, then bounce them back into onboarding on
+      // next launch — the reported completion loop (BUG 02). Don't mark complete
+      // unless the flag actually persisted; surface the error and let them retry.
       if (prefsError) {
-        // Preferences upsert failed
+        throw new Error(`Could not save your preferences: ${prefsError.message}`)
       }
 
       // Set onboarded + safety agreed cookies

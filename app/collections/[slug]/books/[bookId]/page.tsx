@@ -88,18 +88,19 @@ export default function BookDetailPage() {
         if (chaptersData && chaptersData.length <= 1) {
           setShowDirectHadiths(true)
 
-          // Fetch hadiths for this book directly
-          const { data: collectionHadiths } = await supabase
-            .from("collection_hadiths")
-            .select("hadith_id, hadith_number")
-            .eq("book_id", bookId)
+          // Fetch hadiths for this book directly from the hadiths table —
+          // the single source of truth, keyed by collection_slug + book_number.
+          // (collection_hadiths is unused/empty; this count matches books.total_hadiths.)
+          const { data: hadithsData } = await supabase
+            .from("hadiths")
+            .select("*")
+            .eq("collection_slug", slug)
+            .eq("book_number", bookData.number)
             .order("hadith_number", { ascending: true })
             .range(0, PAGE_SIZE - 1)
 
-          if (collectionHadiths && collectionHadiths.length > 0) {
-            const hadithIds = collectionHadiths.map((ch) => ch.hadith_id)
-
-            const { data: hadithsData } = await supabase.from("hadiths").select("*").in("id", hadithIds)
+          if (hadithsData && hadithsData.length > 0) {
+            const hadithIds = hadithsData.map((h) => h.id)
 
             // Check saved status
             const { data: { user } } = await supabase.auth.getUser()
@@ -113,18 +114,8 @@ export default function BookDetailPage() {
               savedHadithIds = savedData?.map((s) => s.hadith_id) || []
             }
 
-            if (hadithsData) {
-              const mergedHadiths = collectionHadiths
-                .map((ch) => {
-                  const hadith = hadithsData.find((h) => h.id === ch.hadith_id)
-                  if (!hadith) return null
-                  return { ...hadith, hadith_number: ch.hadith_number, is_saved: savedHadithIds.includes(hadith.id) }
-                })
-                .filter(Boolean) as Hadith[]
-
-              setHadiths(mergedHadiths)
-              setHasMore(collectionHadiths.length === PAGE_SIZE)
-            }
+            setHadiths(hadithsData.map((h) => ({ ...h, is_saved: savedHadithIds.includes(h.id) })) as Hadith[])
+            setHasMore(hadithsData.length === PAGE_SIZE)
           }
         } else if (chaptersData) {
           // Multiple chapters -- show the chapter list as before
@@ -168,17 +159,17 @@ export default function BookDetailPage() {
     const from = (nextPage - 1) * PAGE_SIZE
     const to = from + PAGE_SIZE - 1
 
-    const { data: collectionHadiths } = await supabase
-      .from("collection_hadiths")
-      .select("hadith_id, hadith_number")
-      .eq("book_id", bookId)
+    if (!book) return
+    const { data: hadithsData } = await supabase
+      .from("hadiths")
+      .select("*")
+      .eq("collection_slug", slug)
+      .eq("book_number", book.number)
       .order("hadith_number", { ascending: true })
       .range(from, to)
 
-    if (collectionHadiths && collectionHadiths.length > 0) {
-      const hadithIds = collectionHadiths.map((ch) => ch.hadith_id)
-      const { data: hadithsData } = await supabase.from("hadiths").select("*").in("id", hadithIds)
-
+    if (hadithsData && hadithsData.length > 0) {
+      const hadithIds = hadithsData.map((h) => h.id)
       const { data: { user } } = await supabase.auth.getUser()
       let savedHadithIds: string[] = []
       if (user) {
@@ -190,18 +181,8 @@ export default function BookDetailPage() {
         savedHadithIds = savedData?.map((s) => s.hadith_id) || []
       }
 
-      if (hadithsData) {
-        const newHadiths = collectionHadiths
-          .map((ch) => {
-            const hadith = hadithsData.find((h) => h.id === ch.hadith_id)
-            if (!hadith) return null
-            return { ...hadith, hadith_number: ch.hadith_number, is_saved: savedHadithIds.includes(hadith.id) }
-          })
-          .filter(Boolean) as Hadith[]
-
-        setHadiths((prev) => [...prev, ...newHadiths])
-        setHasMore(collectionHadiths.length === PAGE_SIZE)
-      }
+      setHadiths((prev) => [...prev, ...(hadithsData.map((h) => ({ ...h, is_saved: savedHadithIds.includes(h.id) })) as Hadith[])])
+      setHasMore(hadithsData.length === PAGE_SIZE)
     } else {
       setHasMore(false)
     }
